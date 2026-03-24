@@ -227,14 +227,7 @@ To evaluate effectiveness, SIDTVF tracks:
 
 ## License
 
-MIT License (or choose appropriate open-source license)
-
----
-
-## Author
-
-[Your Name]
-Cybersecurity Professional – DFIR & Insider Threat
+MIT License 
 
 ---
 
