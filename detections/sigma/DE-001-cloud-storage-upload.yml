@@ -1,0 +1,114 @@
+title: Insider Threat - Personal Cloud Storage Upload via Web Browser
+id: a4f7b2c1-8e3d-4a9f-b156-2c7e1d8f4a30
+status: experimental
+description: |
+  Detects large HTTPS data transfers (POST requests) from managed endpoints to known personal
+  cloud storage domains via web browser. This pattern is associated with SIDTVF scenario DE-001
+  (Cloud Storage Upload Exfiltration) where an insider uploads sensitive organizational data to
+  a personal cloud storage account. The rule triggers when upload volume exceeds 50 MB to a
+  personal cloud storage domain in a single browsing session.
+
+  This rule should be tuned to your organization's normal data transfer patterns and your
+  approved cloud storage policy. Exclude sanctioned cloud storage destinations used for
+  business purposes.
+references:
+  - https://attack.mitre.org/techniques/T1567/002/
+  - https://attack.mitre.org/techniques/T1005/
+author: SIDTVF Core Team
+date: 2026-03-25
+modified: 2026-03-25
+tags:
+  - attack.exfiltration
+  - attack.t1567.002
+  - attack.collection
+  - attack.t1005
+  - sidtvf.de-001
+logsource:
+  category: proxy
+  # Required: Web proxy logs with URL, method, bytes_out, and source_user fields.
+  # Compatible with: Squid, Zscaler, Palo Alto URL Filtering, Cisco Umbrella, Bluecoat,
+  #                  Microsoft Defender for Cloud Apps (MDCA), Netskope
+logsource:
+  product: proxy
+detection:
+  selection_personal_cloud_domains:
+    # Known personal cloud storage domains — extend this list for your environment
+    cs-host|contains:
+      - 'drive.google.com'
+      - 'www.dropbox.com'
+      - 'api.dropboxapi.com'
+      - 'content.dropboxapi.com'
+      - 'onedrive.live.com'
+      - 'api.onedrive.com'
+      - '1drv.ms'
+      - 'box.com'
+      - 'upload.box.com'
+      - 'mega.nz'
+      - 'icloud.com'
+      - 'upload.icloud.com'
+      - 'wetransfer.com'
+      - 'gofile.io'
+      - 'anonfiles.com'
+  selection_upload_method:
+    cs-method:
+      - 'POST'
+      - 'PUT'
+  selection_high_volume:
+    # Trigger when a single request body exceeds 50 MB
+    # Adjust this threshold based on your baseline and DLP policy
+    cs-bytes|gte: 52428800  # 50 MB in bytes
+  filter_sanctioned_business_accounts:
+    # Exclude organization-managed Google Workspace or OneDrive for Business accounts
+    # Add your organization's managed cloud storage domains here
+    cs-host|contains:
+      - 'drive.google.com/a/yourcompany.com'
+      # Add your organization's sanctioned cloud storage hosts
+  condition: (selection_personal_cloud_domains and selection_upload_method and selection_high_volume) and not filter_sanctioned_business_accounts
+fields:
+  - src_ip
+  - src_user
+  - cs-host
+  - cs-uri-path
+  - cs-method
+  - cs-bytes
+  - sc-status
+  - c-useragent
+  - ClientIP
+  - UserName
+  - Timestamp
+falsepositives:
+  - Employees uploading large legitimate files to approved cloud storage with personal accounts
+    (rare if policy is enforced and sanctioned alternatives exist)
+  - Developers uploading large build artifacts to personal accounts for testing
+  - Automated backup processes using personal cloud accounts (should be excluded via service account filter)
+  - Video conferencing backgrounds or large media files uploaded personally
+level: high
+
+# ---
+# TUNING NOTES:
+#
+# 1. THRESHOLD: The 50 MB threshold (cs-bytes >= 52428800) is a starting point.
+#    - Lower to 10 MB for environments with strict DLP policies or high-sensitivity data
+#    - Raise to 100 MB+ for environments where large file transfers are common
+#    - Consider using a cumulative threshold (total bytes per user per day) rather than
+#      per-request to catch many small uploads that collectively exceed limits.
+#
+# 2. DOMAIN LIST: The personal cloud domain list above should be treated as a starting
+#    point. Review your proxy logs to identify additional personal cloud domains in use
+#    in your environment before deploying.
+#
+# 3. USER CONTEXT: If your proxy logs include user identity (cs-user or similar), add
+#    a lookup against HR-flagged accounts (departing employees, PIP participants) to
+#    generate higher-severity variants of this alert.
+#
+# 4. BROWSER FINGERPRINT: If your proxy logs include user-agent strings, you can
+#    add a filter to focus on browser-based uploads (Chrome, Firefox, Safari user agents)
+#    vs. sync client uploads (Dropbox, Google Drive desktop clients), which have different
+#    risk profiles.
+#
+# 5. SIGMA BACKEND COMPATIBILITY:
+#    - For Splunk: sigmac --target splunk
+#    - For Microsoft Sentinel KQL: sigmac --target azure-monitor or use the sigma Sentinel exporter
+#    - For Elastic: sigmac --target es-qs or es-dsl
+#    - For QRadar: sigmac --target qradar
+# ---
