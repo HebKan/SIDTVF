@@ -83,6 +83,10 @@
 | AC-001 | Insider Account Compromise by External Actor | Collection | T1213 | Data from Information Repositories | Phase 3 |
 | AC-001 | Insider Account Compromise by External Actor | Collection | T1530 | Data from Cloud Storage Object | Phase 3 |
 | AC-001 | Insider Account Compromise by External Actor | Exfiltration | T1041 | Exfiltration Over C2 Channel | Phase 4 |
+| DE-003 | AI Tool Data Leakage | Collection | T1213 | Data from Information Repositories | Phase 2 — internal data access |
+| DE-003 | AI Tool Data Leakage | Collection | T1005 | Data from Local System | Phase 2 — local file access |
+| DE-003 | AI Tool Data Leakage | Exfiltration | T1567.002 | Exfiltration Over Web Service: Exfiltration to Cloud Storage | Phase 3 — upload to AI platform |
+| DE-003 | AI Tool Data Leakage | Exfiltration | T1048.003 | Exfiltration Over Unencrypted Non-C2 Protocol | Phase 3 — when no HTTPS inspection |
 
 ---
 
@@ -92,11 +96,11 @@ This table shows which scenarios cover each ATT&CK technique — useful for iden
 
 | ATT&CK ID | Technique Name | Scenarios That Cover It |
 |-----------|----------------|------------------------|
-| T1005 | Data from Local System | DE-001, PM-001, UA-001, TP-001, IP-001 |
+| T1005 | Data from Local System | DE-001, DE-003, PM-001, UA-001, TP-001, IP-001 |
 | T1018 | Remote System Discovery | TP-001 |
 | T1041 | Exfiltration Over C2 Channel | AC-001 |
 | T1048.002 | Exfiltration Over Asymmetric Encrypted Non-C2 Protocol | TP-001 |
-| T1048.003 | Exfiltration Over Unencrypted Non-C2 Protocol | DE-002 |
+| T1048.003 | Exfiltration Over Unencrypted Non-C2 Protocol | DE-002, DE-003 |
 | T1052.001 | Exfiltration Over Physical Medium: Exfiltration over USB | IP-001 |
 | T1070.003 | Indicator Removal: Clear Command History | IP-001 |
 | T1070.004 | Indicator Removal: File Deletion | DE-001, SB-001 |
@@ -111,7 +115,7 @@ This table shows which scenarios cover each ATT&CK technique — useful for iden
 | T1098.003 | Account Manipulation: Additional Email Delegate Permissions | DE-002 |
 | T1114.003 | Email Collection: Email Forwarding Rule | DE-002 |
 | T1195.001 | Supply Chain Compromise: Compromise Software Dependencies | TP-001 |
-| T1213 | Data from Information Repositories | DE-001, UA-001, IP-001, AC-001 |
+| T1213 | Data from Information Repositories | DE-001, DE-003, UA-001, IP-001, AC-001 |
 | T1219 | Remote Access Software | TP-001 |
 | T1485 | Data Destruction | SB-001 |
 | T1486 | Data Encrypted for Impact | SB-001 |
@@ -124,7 +128,7 @@ This table shows which scenarios cover each ATT&CK technique — useful for iden
 | T1560.001 | Archive Collected Data: Archive via Utility | DE-001, TP-001, IP-001 |
 | T1565.001 | Data Manipulation: Stored Data Manipulation | UA-001, FR-001 |
 | T1566.002 | Phishing: Spearphishing Link | AC-001 |
-| T1567.002 | Exfiltration Over Web Service: Exfiltration to Cloud Storage | DE-001, PM-001, IP-001, PV-001 |
+| T1567.002 | Exfiltration Over Web Service: Exfiltration to Cloud Storage | DE-001, DE-003, PM-001, IP-001, PV-001 |
 | T1621 | Multi-Factor Authentication Request Generation | AC-001 |
 
 ---
@@ -165,3 +169,4 @@ This mapping was created against MITRE ATT&CK Enterprise v15. When a new ATT&CK 
 |---------|------|-------------|
 | 1.0 | 2026-03-25 | Initial mapping for scenarios DE-001, DE-002, PM-001, UA-001, SB-001, TP-001 |
 | 1.1 | 2026-03-26 | Added mappings for FR-001, IP-001, PV-001, AC-001; updated coverage summary and cross-reference table |
+| 1.2 | 2026-03-26 | Added DE-003 (AI Tool Data Leakage) technique mappings |

@@ -52,6 +52,19 @@ SIDTVF/
 │   ├── actor-archetypes.md                # Four insider threat actor definitions
 │   ├── maturity-model.md                  # Program maturity levels and self-assessment
 │   ├── legal-privacy.md                   # Legal, privacy, and compliance guidance
+│   ├── getting-started.md                 # Day 1 / Week 1 / Month 1 onboarding guide
+│   ├── coverage-matrix.md                 # Artifact coverage status per scenario
+│   ├── executive-briefing-template.md     # Quarterly CISO/board briefing template
+│   ├── tabletop-exercise-guide.md         # 2-hour tabletop exercise guide with inject cards
+│   ├── soar-integration.md                # SOAR integration guide (Sentinel, Splunk, XSOAR)
+│   ├── policies/                          # Policy templates
+│   │   ├── program-charter.md             # Insider Threat Program Charter template
+│   │   ├── monitoring-notice.md           # Employee monitoring notice template
+│   │   └── aup-addendum.md                # Acceptable Use Policy AI tools addendum
+│   ├── starter-packs/                     # Industry-specific quick-start guides
+│   │   ├── healthcare.md                  # Healthcare and life sciences starter pack
+│   │   ├── finance.md                     # Financial services starter pack
+│   │   └── technology.md                  # Technology and software starter pack
 │   └── processes/                         # Step-by-step process guides and workflow diagrams
 │       ├── scenario-authoring-guide.md    # How to create a new scenario
 │       ├── validation-cycle-guide.md      # End-to-end validation methodology
@@ -83,7 +96,8 @@ SIDTVF/
 ├── detections/
 │   ├── _template.md                       # Detection rule authoring template
 │   ├── sigma/                             # Platform-agnostic Sigma rules
-│   └── queries/                           # Platform-specific queries (KQL, SPL, YARA-L)
+│   ├── queries/                           # Platform-specific queries (KQL, SPL, YARA-L)
+│   └── triage-cards/                      # SOC analyst quick-reference cards (print-ready)
 │
 ├── playbooks/
 │   ├── _template.md                       # Response playbook authoring template
@@ -96,6 +110,18 @@ SIDTVF/
 ├── validation/
 │   ├── _template.md                       # Test case authoring template
 │   └── test-cases/                        # Validation test cases
+│
+├── simulation/                            # Layer 7 — Behavioral simulation tests
+│   ├── README.md                          # Simulation layer overview and philosophy
+│   ├── _template.md                       # Simulation test template
+│   ├── authorization-checklist.md         # Required approvals before running any simulation
+│   └── tests/                             # Individual simulation tests
+│       ├── SIM-DE-001.md                  # Cloud storage upload simulation
+│       ├── SIM-DE-002.md                  # Email forwarding rule simulation
+│       └── SIM-SB-001.md                  # Database deletion simulation
+│
+├── scenarios/
+│   └── index.yaml                         # Machine-readable scenario index
 │
 └── mapping/
     ├── mitre-attack.md                    # MITRE ATT&CK technique mapping table
@@ -190,12 +216,33 @@ Step-by-step guides for each major framework activity:
 
 | Process | Guide |
 |---------|-------|
+| Getting started (Day 1 guide) | [docs/getting-started.md](docs/getting-started.md) |
 | Creating a new scenario | [docs/processes/scenario-authoring-guide.md](docs/processes/scenario-authoring-guide.md) |
 | Running a validation cycle | [docs/processes/validation-cycle-guide.md](docs/processes/validation-cycle-guide.md) |
 | Conducting a threat hunt | [docs/processes/threat-hunting-guide.md](docs/processes/threat-hunting-guide.md) |
 | Developing a detection rule | [docs/processes/detection-development-guide.md](docs/processes/detection-development-guide.md) |
+| Running a simulation test | [simulation/README.md](simulation/README.md) |
+| Running a tabletop exercise | [docs/tabletop-exercise-guide.md](docs/tabletop-exercise-guide.md) |
+| Integrating with SOAR | [docs/soar-integration.md](docs/soar-integration.md) |
 | Workflow diagrams (all processes) | [docs/processes/workflow-diagrams.md](docs/processes/workflow-diagrams.md) |
 | RACI matrix (all roles) | [docs/processes/raci-matrix.md](docs/processes/raci-matrix.md) |
+| Artifact coverage status | [docs/coverage-matrix.md](docs/coverage-matrix.md) |
+
+### Industry Starter Packs
+
+| Industry | Guide |
+|----------|-------|
+| Healthcare and Life Sciences | [docs/starter-packs/healthcare.md](docs/starter-packs/healthcare.md) |
+| Financial Services | [docs/starter-packs/finance.md](docs/starter-packs/finance.md) |
+| Technology and Software | [docs/starter-packs/technology.md](docs/starter-packs/technology.md) |
+
+### Policy Templates
+
+| Template | File |
+|----------|------|
+| Insider Threat Program Charter | [docs/policies/program-charter.md](docs/policies/program-charter.md) |
+| Employee Monitoring Notice | [docs/policies/monitoring-notice.md](docs/policies/monitoring-notice.md) |
+| Acceptable Use Policy — AI Tools Addendum | [docs/policies/aup-addendum.md](docs/policies/aup-addendum.md) |
 
 ---
 
@@ -220,6 +267,7 @@ The following worked examples are included in this repository:
 |------|----|------|
 | Scenario | DE-001 | Cloud Storage Upload Exfiltration |
 | Scenario | DE-002 | Email Auto-Forwarding Rule |
+| Scenario | DE-003 | AI Tool Data Leakage |
 | Scenario | PM-001 | Privilege Escalation via Access Abuse |
 | Scenario | UA-001 | After-Hours Unauthorized System Access |
 | Scenario | SB-001 | Targeted Database Deletion |
@@ -236,6 +284,12 @@ The following worked examples are included in this repository:
 | Hunt Hypothesis | HYP-DE-001 | Cloud Storage Exfiltration Hunt |
 | Hunt Hypothesis | HYP-DE-002 | Email Auto-Forwarding Rule Hunt |
 | Validation | TC-DE-001 | Cloud Storage Exfiltration Test Case |
+| Triage Card | TRIAGE-DE-001 | Cloud Storage Exfiltration SOC Triage Card |
+| Triage Card | TRIAGE-DE-002 | Email Forwarding SOC Triage Card |
+| Triage Card | TRIAGE-SB-001 | Database Deletion SOC Triage Card |
+| Simulation | SIM-DE-001 | Cloud Storage Exfiltration Simulation Test |
+| Simulation | SIM-DE-002 | Email Forwarding Simulation Test |
+| Simulation | SIM-SB-001 | Database Deletion Simulation Test |
 
 ---
 
