@@ -51,10 +51,25 @@ SIDTVF/
 │   ├── framework-overview.md              # Full six-layer framework specification
 │   ├── actor-archetypes.md                # Four insider threat actor definitions
 │   ├── maturity-model.md                  # Program maturity levels and self-assessment
-│   └── legal-privacy.md                   # Legal, privacy, and compliance guidance
+│   ├── legal-privacy.md                   # Legal, privacy, and compliance guidance
+│   └── processes/                         # Step-by-step process guides and workflow diagrams
+│       ├── scenario-authoring-guide.md    # How to create a new scenario
+│       ├── validation-cycle-guide.md      # End-to-end validation methodology
+│       ├── threat-hunting-guide.md        # Hypothesis-driven hunting process
+│       ├── detection-development-guide.md # Detection engineering process
+│       ├── workflow-diagrams.md           # ASCII workflow diagrams for all major processes
+│       └── raci-matrix.md                 # RACI matrix across all program roles
 │
 ├── scenarios/
 │   ├── _template.md                       # Canonical scenario authoring template
+│   ├── _templates/                        # Specialized sub-templates by vector/application/vuln class
+│   │   ├── cloud-attack-vector.md         # Pre-populated for cloud-based scenarios
+│   │   ├── email-attack-vector.md         # Pre-populated for email-based scenarios
+│   │   ├── endpoint-attack-vector.md      # Pre-populated for endpoint-based scenarios
+│   │   ├── m365-application.md            # Pre-populated for Microsoft 365 scenarios
+│   │   ├── aws-application.md             # Pre-populated for AWS scenarios
+│   │   ├── credential-abuse-vuln-class.md # Pre-populated for credential abuse scenarios
+│   │   └── data-access-abuse-vuln-class.md # Pre-populated for data access abuse scenarios
 │   ├── data-exfiltration/                 # DE — unauthorized data removal
 │   ├── privilege-misuse/                  # PM — abuse of legitimate access
 │   ├── unauthorized-access/               # UA — access beyond authorization
@@ -169,6 +184,21 @@ Track outcomes using the KPIs defined in [metrics/kpis.md](metrics/kpis.md), the
 
 ---
 
+## Process Documentation
+
+Step-by-step guides for each major framework activity:
+
+| Process | Guide |
+|---------|-------|
+| Creating a new scenario | [docs/processes/scenario-authoring-guide.md](docs/processes/scenario-authoring-guide.md) |
+| Running a validation cycle | [docs/processes/validation-cycle-guide.md](docs/processes/validation-cycle-guide.md) |
+| Conducting a threat hunt | [docs/processes/threat-hunting-guide.md](docs/processes/threat-hunting-guide.md) |
+| Developing a detection rule | [docs/processes/detection-development-guide.md](docs/processes/detection-development-guide.md) |
+| Workflow diagrams (all processes) | [docs/processes/workflow-diagrams.md](docs/processes/workflow-diagrams.md) |
+| RACI matrix (all roles) | [docs/processes/raci-matrix.md](docs/processes/raci-matrix.md) |
+
+---
+
 ## Key Principles
 
 | Principle | Description |
@@ -194,10 +224,17 @@ The following worked examples are included in this repository:
 | Scenario | UA-001 | After-Hours Unauthorized System Access |
 | Scenario | SB-001 | Targeted Database Deletion |
 | Scenario | TP-001 | Vendor Credential Abuse |
-| Detection (Sigma) | DET-DE-001 | Cloud Storage Exfiltration Sigma Rule |
-| Detection (KQL) | DET-DE-001 | Cloud Storage Exfiltration KQL Query |
+| Scenario | FR-001 | Invoice and Vendor Payment Manipulation |
+| Scenario | IP-001 | Source Code and Proprietary Algorithm Theft |
+| Scenario | PV-001 | Shadow IT Data Storage |
+| Scenario | AC-001 | Insider Account Compromise by External Actor |
+| Detection (Sigma) | DET-DE-001-SIGMA | Cloud Storage Exfiltration Sigma Rule |
+| Detection (KQL) | DET-DE-001-KQL | Cloud Storage Exfiltration KQL Queries |
+| Detection (SPL) | DET-DE-001-SPL | Cloud Storage Exfiltration Splunk SPL Queries |
 | Playbook | PB-DE-001 | Cloud Storage Exfiltration Response |
+| Playbook | PB-SB-001 | Database Deletion (Insider Sabotage) Response |
 | Hunt Hypothesis | HYP-DE-001 | Cloud Storage Exfiltration Hunt |
+| Hunt Hypothesis | HYP-DE-002 | Email Auto-Forwarding Rule Hunt |
 | Validation | TC-DE-001 | Cloud Storage Exfiltration Test Case |
 
 ---

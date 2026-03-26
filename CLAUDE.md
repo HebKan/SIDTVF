@@ -25,7 +25,9 @@ SIDTVF is an insider threat detection and validation framework designed for use 
 | `docs/actor-archetypes.md` | Four actor type definitions | When actor types or sub-types are added or changed |
 | `docs/maturity-model.md` | Maturity levels and self-assessment | When maturity criteria or domains are revised |
 | `docs/legal-privacy.md` | Legal and compliance guidance | When regulations change or new jurisdictions are added |
+| `docs/processes/*.md` | Step-by-step process guides and RACI matrix | When process steps, workflow diagrams, or RACI ownership changes |
 | `scenarios/_template.md` | Canonical scenario schema | When scenario fields are added or removed |
+| `scenarios/_templates/*.md` | Specialized sub-templates (attack vector, application, vuln class) | When a new sub-template type is added or fields change |
 | `scenarios/*/**.md` | Individual scenario files | When a specific scenario is added, updated, or deprecated |
 | `detections/_template.md` | Detection rule schema | When detection fields are added or removed |
 | `detections/sigma/*.yml` | Sigma detection rules | When detection logic changes or new rules are added |
