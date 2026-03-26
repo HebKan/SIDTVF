@@ -136,7 +136,31 @@ The investigation confirmed Marcus had exfiltrated approximately 14 GB of data, 
 
 ---
 
-## 7. MITRE ATT&CK Mapping
+## 7. Minimum Viable Detection
+
+> **If you can only implement one control:** Deploy a daily cumulative upload volume query against your web proxy logs. Alert when any single user's total bytes sent to personal cloud storage domains exceeds 200 MB in a 24-hour period. This single rule catches both large single uploads AND adversaries who split uploads into small batches to evade per-session thresholds. It requires only proxy logs — no endpoint agent, no DLP, no UEBA.
+>
+> Query reference: `detections/queries/DE-001-spl.md` Query 3 (cumulative daily volume), or `detections/queries/DE-001-kql.md` Query 3.
+
+---
+
+## 7a. Detection Blind Spots
+
+The following known gaps exist in DE-001 detection coverage. Document these so your team understands what is and is not covered.
+
+| Blind Spot | Why It Evades Detection | Mitigating Control |
+|-----------|------------------------|-------------------|
+| Personal device on home or cellular network | Completely outside corporate proxy visibility | MDM/CASB mobile agent; policy prohibiting sensitive data on personal devices |
+| Incognito / Private browser mode | Proxy logs typically cannot distinguish Incognito mode from normal browsing | Endpoint agent captures regardless of browser mode |
+| Personal VPN or proxy bypass | User routes traffic through a personal VPN before uploading; destination appears as VPN endpoint | Full-tunnel VPN policy; CASB agent-based detection |
+| Slow exfiltration (< 5 MB/day over weeks) | Well below any volume threshold; pattern only detectable over 60–90 day lookback | UEBA behavioral baseline over extended window |
+| Uploading via corporate-sanctioned tool (OneDrive personal partition) | Destination domain is the same as the corporate tool | CASB with user identity awareness to distinguish personal vs. corporate account |
+| Screenshot exfiltration (phone camera) | Completely invisible to all electronic monitoring | Physical security controls; clean desk policy |
+| Air-gap via USB to personal device followed by upload | USB write event is detectable; connection to personal device then uploads is outside visibility | USB write detection + endpoint DLP |
+
+---
+
+## 8. MITRE ATT&CK Mapping
 
 | Tactic | Technique ID | Technique Name | Applies To |
 |--------|-------------|----------------|------------|

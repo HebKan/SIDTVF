@@ -41,6 +41,16 @@ SIDTVF is an insider threat detection and validation framework designed for use 
 | `mapping/mitre-attack.md` | ATT&CK technique mapping | When scenarios are added or ATT&CK version is updated |
 | `mapping/compliance.md` | Compliance framework mapping | When scenarios or compliance controls change |
 | `metrics/kpis.md` | KPI definitions | When metrics or measurement methods change |
+| `docs/getting-started.md` | Day 1 onboarding guide | When the recommended starting path changes |
+| `docs/coverage-matrix.md` | Artifact coverage per scenario | When any artifact is added or scenario is added |
+| `docs/policies/*.md` | Policy templates | When legal requirements or monitoring scope changes |
+| `docs/starter-packs/*.md` | Industry starter packs | When scenario priorities or regulations change |
+| `simulation/README.md` | Simulation layer overview | When simulation layer design or philosophy changes |
+| `simulation/_template.md` | Simulation test template | When simulation test fields are added or removed |
+| `simulation/tests/*.md` | Individual simulation tests | When simulation test steps or expected output changes |
+| `detections/triage-cards/*.md` | SOC triage cards | When escalation criteria or response steps change |
+| `scenarios/index.yaml` | Machine-readable scenario index | When any scenario is added, modified, or deprecated |
+| `CONTRIBUTING.md` | Contribution guide | When the review process or contribution criteria changes |
 
 ---
 

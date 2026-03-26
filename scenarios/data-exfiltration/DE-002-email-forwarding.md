@@ -126,7 +126,28 @@ The auto-forwarding rule had persisted for seven months. Had the email system's 
 
 ---
 
-## 7. MITRE ATT&CK Mapping
+## 7. Minimum Viable Detection
+
+> **If you can only implement one control:** Run the Exchange Online PowerShell snapshot (HYP-DE-002 Query 2) monthly. Export all active inbox rules with external ForwardTo or RedirectTo targets across all mailboxes. Compare against the prior month's export — any new rules that appeared since the last snapshot require immediate investigation. This requires no SIEM, no real-time alerting infrastructure, and no CASB. One PowerShell command, run monthly, catches active forwarding rules before an entire quarter of email is exfiltrated.
+>
+> Query reference: `hunting/hypotheses/HYP-DE-002.md` Query 2 (Exchange PowerShell snapshot).
+
+---
+
+## 7a. Detection Blind Spots
+
+| Blind Spot | Why It Evades Detection | Mitigating Control |
+|-----------|------------------------|-------------------|
+| SMTP forwarding via custom email client or plugin | Does not create an Exchange inbox rule; bypasses `New-InboxRule` audit events | SMTP relay monitoring for unexpected external destinations |
+| BCC-based forwarding using Outlook macro | No forwarding rule created; BCC appears in sent items but is easy to miss | Inspect outbound email for unusual BCC patterns |
+| Rule created before audit logging baseline was established | Historical rule predates detection; appears as "no change" in monthly diff | Initial baseline audit catches all rules regardless of creation date |
+| Rule created during active session via OWA on personal device | On corporate network — detectable; on personal device/network — not detectable | CASB agent on personal devices (if applicable); MDM |
+| Delegate access instead of forwarding rule | T1098.003 variant; does not appear in inbox rules audit | Separately audit `Add-MailboxPermission` events (HYP-DE-002 Query 4) |
+| Forwarding to a corporate email alias the actor controls | Destination appears "internal"; actually routes externally | Audit all shared mailbox and alias configurations |
+
+---
+
+## 8. MITRE ATT&CK Mapping
 
 | Tactic | Technique ID | Technique Name | Applies To |
 |--------|-------------|----------------|------------|

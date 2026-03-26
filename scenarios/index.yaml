@@ -1,0 +1,360 @@
+# SIDTVF Scenario Index
+# Machine-readable index of all active SIDTVF scenarios.
+# Update this file whenever a scenario is added, modified, or deprecated.
+# See CLAUDE.md for naming conventions and cascade update rules.
+#
+# Field reference:
+#   id:           Scenario ID (e.g. DE-001)
+#   name:         Short human-readable name
+#   category:     Full category name
+#   category_code: Category code (DE, PM, UA, SB, FR, IP, TP, PV, AC)
+#   status:       Active | Deprecated
+#   version:      Semantic version (major.minor)
+#   last_updated: ISO 8601 date
+#   severity:     Critical | High | Medium | Low
+#   maturity_min: Minimum maturity level required (1-5)
+#   actors:       List of actor codes (MAL, NEG, COM, TP)
+#   techniques:   List of MITRE ATT&CK technique IDs
+#   artifacts:
+#     sigma:      DET-[ID]-SIGMA file path or null
+#     kql:        DET-[ID]-KQL file path or null
+#     spl:        DET-[ID]-SPL file path or null
+#     playbook:   PB-[ID] file path or null
+#     hunt:       HYP-[ID] file path or null
+#     test_case:  TC-[ID] file path or null
+#     triage_card: TRIAGE-[ID] file path or null
+#     simulation: SIM-[ID] file path or null
+#   file:         Path to the scenario file relative to repository root
+#   description:  One-sentence description
+
+schema_version: "1.0"
+generated: "2026-03-26"
+framework_version: "1.1"
+
+scenarios:
+
+  - id: DE-001
+    name: Cloud Storage Upload Exfiltration
+    category: Data Exfiltration
+    category_code: DE
+    status: Active
+    version: "1.0"
+    last_updated: "2026-03-25"
+    severity: Critical
+    maturity_min: 2
+    actors:
+      - MAL
+      - NEG
+    techniques:
+      - T1213
+      - T1005
+      - T1560.001
+      - T1567.002
+      - T1070.004
+    artifacts:
+      sigma: detections/sigma/DE-001-cloud-storage-upload.yml
+      kql: detections/queries/DE-001-kql.md
+      spl: detections/queries/DE-001-spl.md
+      playbook: playbooks/examples/PB-DE-001-cloud-storage-exfil.md
+      hunt: hunting/hypotheses/HYP-DE-001.md
+      test_case: validation/test-cases/TC-DE-001.md
+      triage_card: detections/triage-cards/TRIAGE-DE-001.md
+      simulation: simulation/tests/SIM-DE-001.md
+    file: scenarios/data-exfiltration/DE-001-cloud-storage-upload.md
+    description: Insider stages and uploads files to personal cloud storage (Dropbox, Google Drive, iCloud) to exfiltrate sensitive data.
+
+  - id: DE-002
+    name: Email Auto-Forwarding Rule
+    category: Data Exfiltration
+    category_code: DE
+    status: Active
+    version: "1.0"
+    last_updated: "2026-03-25"
+    severity: High
+    maturity_min: 2
+    actors:
+      - MAL
+      - NEG
+    techniques:
+      - T1114.003
+      - T1048.003
+      - T1098.003
+    artifacts:
+      sigma: null
+      kql: null
+      spl: null
+      playbook: null
+      hunt: hunting/hypotheses/HYP-DE-002.md
+      test_case: null
+      triage_card: detections/triage-cards/TRIAGE-DE-002.md
+      simulation: simulation/tests/SIM-DE-002.md
+    file: scenarios/data-exfiltration/DE-002-email-forwarding.md
+    description: Insider creates an inbox rule to automatically forward or redirect email to an external personal address.
+
+  - id: DE-003
+    name: AI Tool Data Leakage
+    category: Data Exfiltration
+    category_code: DE
+    status: Active
+    version: "1.0"
+    last_updated: "2026-03-26"
+    severity: High
+    maturity_min: 2
+    actors:
+      - NEG
+      - MAL
+    techniques:
+      - T1213
+      - T1005
+      - T1567.002
+      - T1048.003
+    artifacts:
+      sigma: null
+      kql: null
+      spl: null
+      playbook: null
+      hunt: null
+      test_case: null
+      triage_card: null
+      simulation: null
+    file: scenarios/data-exfiltration/DE-003-ai-tool-data-leakage.md
+    description: Employee pastes sensitive organizational data (PII, PHI, source code, MNPI) into a consumer AI assistant, disclosing it to a third-party provider.
+
+  - id: PM-001
+    name: Privilege Escalation via Access Abuse
+    category: Privilege Misuse
+    category_code: PM
+    status: Active
+    version: "1.0"
+    last_updated: "2026-03-25"
+    severity: High
+    maturity_min: 3
+    actors:
+      - MAL
+    techniques:
+      - T1087.002
+      - T1083
+      - T1078.002
+      - T1552.001
+      - T1530
+      - T1005
+      - T1567.002
+    artifacts:
+      sigma: null
+      kql: null
+      spl: null
+      playbook: null
+      hunt: null
+      test_case: null
+      triage_card: null
+      simulation: null
+    file: scenarios/privilege-misuse/PM-001-access-escalation.md
+    description: Insider abuses legitimate privileged access or acquires credentials beyond their authorization to access systems and data outside their job scope.
+
+  - id: UA-001
+    name: After-Hours Unauthorized System Access
+    category: Unauthorized Access
+    category_code: UA
+    status: Active
+    version: "1.0"
+    last_updated: "2026-03-25"
+    severity: High
+    maturity_min: 2
+    actors:
+      - MAL
+      - COM
+    techniques:
+      - T1078.002
+      - T1082
+      - T1087
+      - T1005
+      - T1213
+      - T1565.001
+    artifacts:
+      sigma: null
+      kql: null
+      spl: null
+      playbook: null
+      hunt: null
+      test_case: null
+      triage_card: null
+      simulation: null
+    file: scenarios/unauthorized-access/UA-001-after-hours-system-access.md
+    description: Insider accesses business-critical systems during off-hours for unauthorized purposes, exploiting legitimate credentials.
+
+  - id: SB-001
+    name: Targeted Database Deletion
+    category: Sabotage and Disruption
+    category_code: SB
+    status: Active
+    version: "1.0"
+    last_updated: "2026-03-25"
+    severity: Critical
+    maturity_min: 3
+    actors:
+      - MAL
+    techniques:
+      - T1083
+      - T1082
+      - T1485
+      - T1490
+      - T1489
+      - T1070.004
+      - T1486
+    artifacts:
+      sigma: null
+      kql: null
+      spl: null
+      playbook: playbooks/examples/PB-SB-001-database-deletion.md
+      hunt: null
+      test_case: null
+      triage_card: detections/triage-cards/TRIAGE-SB-001.md
+      simulation: simulation/tests/SIM-SB-001.md
+    file: scenarios/sabotage/SB-001-targeted-database-deletion.md
+    description: Disgruntled privileged user (DBA or sysadmin) deliberately deletes or destroys production databases and backup systems.
+
+  - id: TP-001
+    name: Vendor Credential Abuse
+    category: Third-Party Risk
+    category_code: TP
+    status: Active
+    version: "1.0"
+    last_updated: "2026-03-25"
+    severity: Critical
+    maturity_min: 3
+    actors:
+      - TP
+      - MAL
+    techniques:
+      - T1078.004
+      - T1195.001
+      - T1087
+      - T1018
+      - T1005
+      - T1560.001
+      - T1048.002
+      - T1219
+    artifacts:
+      sigma: null
+      kql: null
+      spl: null
+      playbook: null
+      hunt: null
+      test_case: null
+      triage_card: null
+      simulation: null
+    file: scenarios/third-party-risk/TP-001-vendor-credential-abuse.md
+    description: Third-party vendor or contractor abuses legitimate privileged access credentials to access and exfiltrate data beyond their contracted scope.
+
+  - id: FR-001
+    name: Invoice and Vendor Payment Manipulation
+    category: Fraud and Financial Crime
+    category_code: FR
+    status: Active
+    version: "1.0"
+    last_updated: "2026-03-26"
+    severity: Critical
+    maturity_min: 3
+    actors:
+      - MAL
+    techniques:
+      - T1565.001
+      - T1070.006
+      - T1496
+    artifacts:
+      sigma: null
+      kql: null
+      spl: null
+      playbook: null
+      hunt: null
+      test_case: null
+      triage_card: null
+      simulation: null
+    file: scenarios/fraud/FR-001-invoice-manipulation.md
+    description: Insider with access to accounts payable systems manipulates vendor banking details or creates fictitious vendors to redirect payments.
+
+  - id: IP-001
+    name: Source Code and Proprietary Algorithm Theft
+    category: Intellectual Property Theft
+    category_code: IP
+    status: Active
+    version: "1.0"
+    last_updated: "2026-03-26"
+    severity: Critical
+    maturity_min: 3
+    actors:
+      - MAL
+    techniques:
+      - T1213
+      - T1005
+      - T1560.001
+      - T1567.002
+      - T1052.001
+      - T1070.003
+    artifacts:
+      sigma: null
+      kql: null
+      spl: null
+      playbook: null
+      hunt: null
+      test_case: null
+      triage_card: null
+      simulation: null
+    file: scenarios/ip-theft/IP-001-source-code-theft.md
+    description: Engineer or researcher bulk-clones repositories, exports model weights, and exfiltrates proprietary technical assets before departure.
+
+  - id: PV-001
+    name: Shadow IT Data Storage
+    category: Policy Violation
+    category_code: PV
+    status: Active
+    version: "1.0"
+    last_updated: "2026-03-26"
+    severity: Medium
+    maturity_min: 2
+    actors:
+      - NEG
+    techniques:
+      - T1567.002
+    artifacts:
+      sigma: null
+      kql: null
+      spl: null
+      playbook: null
+      hunt: null
+      test_case: null
+      triage_card: null
+      simulation: null
+    file: scenarios/policy-violation/PV-001-shadow-it-data-storage.md
+    description: Employee stores work documents in personal cloud storage due to friction with sanctioned tools, creating uncontrolled data copies without malicious intent.
+
+  - id: AC-001
+    name: Insider Account Compromise by External Actor
+    category: Account Compromise
+    category_code: AC
+    status: Active
+    version: "1.0"
+    last_updated: "2026-03-26"
+    severity: Critical
+    maturity_min: 2
+    actors:
+      - COM
+    techniques:
+      - T1566.002
+      - T1621
+      - T1539
+      - T1078
+      - T1213
+      - T1530
+      - T1041
+    artifacts:
+      sigma: null
+      kql: null
+      spl: null
+      playbook: null
+      hunt: null
+      test_case: null
+      triage_card: null
+      simulation: null
+    file: scenarios/account-compromise/AC-001-credential-theft-external-actor.md
+    description: External actor compromises an insider's credentials via AiTM phishing, then uses the hijacked session to access and exfiltrate sensitive organizational data.
