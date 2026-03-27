@@ -1,6 +1,6 @@
 # SIDTVF Framework Overview
 
-> **Document Version:** 1.0 | **Status:** Active | **Last Updated:** 2026-03-25
+> **Document Version:** 1.1 | **Status:** Active | **Last Updated:** 2026-03-27
 
 ---
 
@@ -30,20 +30,22 @@ SIDTVF is built on the following design choices:
 
 ## 2. Framework Layers
 
-SIDTVF is structured into six layers. Each layer has defined inputs, activities, and outputs. Outputs from earlier layers become inputs to later layers. The feedback loop at Layer 6 returns outputs to Layer 1, creating a continuous improvement cycle.
+SIDTVF is structured into seven layers. Each layer has defined inputs, activities, and outputs. Outputs from earlier layers become inputs to later layers. The feedback loop at Layer 6 returns outputs to Layer 1, creating a continuous improvement cycle. Layer 7 (Simulation) runs alongside the full cycle, providing behavioral evidence that validates detection coverage.
 
 ```
- ┌───────────────────────────────────────────────────────────┐
- │                                                           │
- │   Layer 1: Scenario           ──► Layer 2: Validation     │
- │                                         │                 │
- │   Layer 6: Feedback Loop ◄──── Layer 3: Threat Hunting    │
- │         │                               │                 │
- │         ▼                      Layer 4: Integration       │
- │   Layer 1 (updated)                     │                 │
- │                               Layer 5: Mapping            │
- │                                                           │
- └───────────────────────────────────────────────────────────┘
+ ┌─────────────────────────────────────────────────────────────┐
+ │                                                             │
+ │   Layer 1: Scenario           ──► Layer 2: Validation       │
+ │                                         │                   │
+ │   Layer 6: Feedback Loop ◄──── Layer 3: Threat Hunting      │
+ │         │                               │                   │
+ │         ▼                      Layer 4: Integration         │
+ │   Layer 1 (updated)                     │                   │
+ │                               Layer 5: Mapping              │
+ │                                                             │
+ │   Layer 7: Simulation  ──► (feeds Layers 2, 3, and 6)       │
+ │                                                             │
+ └─────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -162,6 +164,29 @@ SIDTVF is structured into six layers. Each layer has defined inputs, activities,
 
 ---
 
+### Layer 7 — Behavioral Simulation
+
+**Purpose:** Execute authorized, behavior-based simulation tests that validate whether detection rules fire as expected against realistic insider threat activity patterns — using legitimate native tools and synthetic data only.
+
+**Inputs:** Active scenario cards (Layer 1), detection rules (Layer 2 outputs), validation gaps (Layer 2), authorization checklist (required pre-condition).
+
+**Activities:**
+- Design simulation tests that replicate the behavioral pattern defined in a scenario card (volume, timing, sequence, target) — not technique execution
+- Generate synthetic data that mimics realistic data types without containing real PII, PHI, MNPI, or credentials
+- Execute tests in authorized non-production or near-production environments and record which detections fired
+- Measure observation windows (real-time vs. ingestion-delay paths) and identify detection timing gaps
+- Feed simulation results to Layer 2 (validation) and Layer 6 (feedback) to close coverage gaps
+
+**Outputs:**
+- Completed simulation test files (using `simulation/_template.md`)
+- Detection fire/no-fire evidence per rule per scenario
+- Timing gap analysis (observation window results)
+- Blind spot documentation — what the simulation confirmed was NOT detected
+
+**Key Principle:** Simulation tests behavioral patterns (volume/timing/sequence/target), not tool-specific technique execution. A simulation that requires malicious software is not a SIDTVF simulation test.
+
+---
+
 ### Layer 6 — Feedback and Continuous Improvement
 
 **Purpose:** Ensure that operational experience — from detections, hunts, and incidents — continuously improves the scenario library and program posture.
@@ -205,13 +230,17 @@ Scenario Card ──────────────────────
      │                                                           │
      ├──► Detection Rule (DET-[ID]-[PLATFORM])                  │
      │         ├── Sigma Rule (.yml)                            │
-     │         └── Platform Queries (.md)                       │
+     │         ├── Platform Queries (.md)                       │
+     │         └── SOC Triage Card (TRIAGE-[ID])               │
      │                                                           │
      ├──► Hunt Hypothesis (HYP-[ID])                            │
      │         └──► Hunt Findings                               │
      │                                                           │
-     └──► Response Playbook (PB-[ID])                           │
-               └──► Incident Report                             │
+     ├──► Response Playbook (PB-[ID])                           │
+     │         └──► Incident Report                             │
+     │                                                           │
+     └──► Simulation Test (SIM-[ID])                            │
+               └──► Detection Gap Evidence                      │
                                                                  │
 All artifacts ──────────────────────────────────────────────────►
      ├──► MITRE ATT&CK Mapping
@@ -270,6 +299,8 @@ See [CLAUDE.md](../CLAUDE.md) for the full, authoritative naming convention refe
 | Playbook | `PB-[CAT]-[NNN]` | `PB-DE-001` |
 | Hunt Hypothesis | `HYP-[CAT]-[NNN]` | `HYP-DE-001` |
 | Validation Test Case | `TC-[CAT]-[NNN]` | `TC-DE-001` |
+| Simulation Test | `SIM-[CAT]-[NNN]` | `SIM-DE-001` |
+| SOC Triage Card | `TRIAGE-[CAT]-[NNN]` | `TRIAGE-DE-001` |
 
 ---
 
@@ -309,4 +340,5 @@ SIDTVF is designed to complement, not replace, existing security frameworks.
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.1 | 2026-03-27 | Added Layer 7 (Behavioral Simulation); updated artifact diagram to include SIM and TRIAGE types; added simulation test ID conventions |
 | 1.0 | 2026-03-25 | Initial framework release |
