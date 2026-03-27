@@ -101,6 +101,18 @@ Format: `TC-[SCENARIO_ID]`
 
 Example: `TC-DE-001`
 
+### Simulation Test IDs
+
+Format: `SIM-[SCENARIO_ID]`
+
+Example: `SIM-DE-001`
+
+### Triage Card IDs
+
+Format: `TRIAGE-[SCENARIO_ID]`
+
+Example: `TRIAGE-DE-001`
+
 ### File Names
 
 - Scenario files: `[SCENARIO_ID]-[short-slug].md` (e.g., `DE-001-cloud-storage-upload.md`)
@@ -109,6 +121,8 @@ Example: `TC-DE-001`
 - Playbook files: `PB-[SCENARIO_ID]-[short-slug].md` (e.g., `PB-DE-001-cloud-storage-exfil.md`)
 - Hypothesis files: `HYP-[SCENARIO_ID].md` (e.g., `HYP-DE-001.md`)
 - Test case files: `TC-[SCENARIO_ID].md` (e.g., `TC-DE-001.md`)
+- Simulation test files: `SIM-[SCENARIO_ID].md` (e.g., `SIM-DE-001.md`)
+- Triage card files: `TRIAGE-[SCENARIO_ID].md` (e.g., `TRIAGE-DE-001.md`)
 
 ---
 
@@ -142,7 +156,11 @@ When a change is made in one file, the following cascade updates are required:
    - `hunting/_template.md` → new hypothesis file
    - `validation/_template.md` → new test case file
    - `playbooks/_template.md` → new playbook file
-6. Update `metrics/kpis.md` if the scenario introduces a new measurement category
+   - `detections/triage-cards/TRIAGE-[SCENARIO_ID].md` → new SOC triage card
+   - `simulation/_template.md` → new simulation test in `simulation/tests/`
+6. Add an entry to `scenarios/index.yaml` with all artifact paths and metadata
+7. Update `docs/coverage-matrix.md` to include the new scenario row
+8. Update `metrics/kpis.md` if the scenario introduces a new measurement category
 
 ### If a scenario is modified:
 
@@ -208,6 +226,15 @@ When a change is made in one file, the following cascade updates are required:
 - Never prescribe legal advice — use hedging language ("organizations should consult legal counsel")
 - Always present options rather than mandates when legal requirements vary by jurisdiction
 - When referencing laws, use full name on first reference, then abbreviation (e.g., "Electronic Communications Privacy Act (ECPA)")
+
+### Simulation Tests
+
+- Every simulation test must reference a completed authorization checklist before any steps
+- Use synthetic data only — never real PII, PHI, MNPI, or production credentials in simulation steps
+- Every simulation step must produce at least one named log artifact (log source + expected event)
+- Cleanup steps are mandatory — every test must end with verified removal of synthetic data and artifacts
+- Tests must document pass/fail criteria explicitly — "detection fired" is not sufficient; specify which rule, within what observation window
+- Never describe simulation steps that require exploiting real vulnerabilities or installing malicious software
 
 ---
 

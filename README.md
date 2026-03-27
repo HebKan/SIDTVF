@@ -1,6 +1,6 @@
 # SIDTVF — Scenario-Driven Insider Threat Detection & Validation Framework
 
-> **Version:** 1.0 | **Status:** Active | **License:** MIT
+> **Version:** 1.1 | **Status:** Active | **License:** MIT
 
 SIDTVF is an open, structured methodology for building, testing, and continuously improving insider threat detection programs. Designed for security teams of any size, SIDTVF provides a common language, reusable templates, and measurable outcomes across all phases of insider threat operations.
 
@@ -21,7 +21,7 @@ Insider threats are among the hardest security problems to solve because the adv
 
 ## Framework Architecture
 
-SIDTVF is organized into six interdependent layers:
+SIDTVF is organized into seven interdependent layers:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -33,6 +33,7 @@ SIDTVF is organized into six interdependent layers:
 │  Layer 4  │ Integration    │ Feed findings to downstream teams        │
 │  Layer 5  │ Mapping        │ Standardize to ATT&CK and compliance     │
 │  Layer 6  │ Feedback Loop  │ Iterate and continuously improve         │
+│  Layer 7  │ Simulation     │ Validate detections via behavioral tests │
 └────────────────────────────┴─────────────────────────────────────────┘
 ```
 
@@ -46,9 +47,10 @@ Full architecture documentation: [docs/framework-overview.md](docs/framework-ove
 SIDTVF/
 ├── README.md                              # This file — start here
 ├── CLAUDE.md                              # AI maintenance instructions
+├── CONTRIBUTING.md                        # Contribution guide and review process
 │
 ├── docs/
-│   ├── framework-overview.md              # Full six-layer framework specification
+│   ├── framework-overview.md              # Full seven-layer framework specification
 │   ├── actor-archetypes.md                # Four insider threat actor definitions
 │   ├── maturity-model.md                  # Program maturity levels and self-assessment
 │   ├── legal-privacy.md                   # Legal, privacy, and compliance guidance
@@ -91,7 +93,8 @@ SIDTVF/
 │   ├── ip-theft/                          # IP — intellectual property targeting
 │   ├── third-party-risk/                  # TP — vendor, contractor, and supply chain
 │   ├── policy-violation/                  # PV — non-malicious non-compliant behavior
-│   └── account-compromise/                # AC — insider account used by external actor
+│   ├── account-compromise/                # AC — insider account used by external actor
+│   └── index.yaml                         # Machine-readable scenario index
 │
 ├── detections/
 │   ├── _template.md                       # Detection rule authoring template
@@ -120,12 +123,12 @@ SIDTVF/
 │       ├── SIM-DE-002.md                  # Email forwarding rule simulation
 │       └── SIM-SB-001.md                  # Database deletion simulation
 │
-├── scenarios/
-│   └── index.yaml                         # Machine-readable scenario index
+├── mapping/
+│   ├── mitre-attack.md                    # MITRE ATT&CK technique mapping table
+│   └── compliance.md                      # Compliance framework mapping table
 │
-└── mapping/
-    ├── mitre-attack.md                    # MITRE ATT&CK technique mapping table
-    └── compliance.md                      # Compliance framework mapping table
+└── metrics/
+    └── kpis.md                            # KPI definitions and measurement targets
 ```
 
 ---
