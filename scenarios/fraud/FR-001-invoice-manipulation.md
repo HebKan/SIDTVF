@@ -13,6 +13,8 @@
 | **Category Code** | FR |
 | **Actor Archetype(s)** | MAL |
 | **Severity** | Critical |
+| **Impact Score** | Catastrophic — Financial ($1M+ achievable in wire fraud and invoice redirection schemes), Legal (SOX 302/404, criminal fraud, potential SEC referral), Reputational (vendor trust, audit committee disclosure required) |
+| **Likelihood Score** | Medium — requires finance team membership and payment approval access, uses standard ERP/email tools, approval workflow gaps are common but actor pool is limited to finance personnel |
 | **Minimum Maturity Level** | 3 |
 
 ---

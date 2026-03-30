@@ -12,7 +12,9 @@
 | **Category** | Policy Violation |
 | **Category Code** | PV |
 | **Actor Archetype(s)** | NEG |
-| **Severity** | Medium |
+| **Severity** | High |
+| **Impact Score** | Moderate — uncontrolled data custody (not immediate breach); data governance and compliance risk (GDPR Art. 25, HIPAA minimum necessary); elevated exposure if the unauthorized storage is later breached |
+| **Likelihood Score** | High — any employee, requires only a free cloud storage account, no technical knowledge, structurally invisible to most endpoint controls, extremely high observed frequency across enterprise environments |
 | **Minimum Maturity Level** | 2 |
 
 ---

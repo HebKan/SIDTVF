@@ -13,6 +13,8 @@
 | **Category Code** | IP |
 | **Actor Archetype(s)** | MAL |
 | **Severity** | Critical |
+| **Impact Score** | Catastrophic — Data (core IP and trade secrets; complete exfiltration of proprietary algorithms), Financial (competitive disadvantage, DTSA damages), Legal (DTSA misappropriation, mandatory injunctive relief filing) |
+| **Likelihood Score** | Medium — requires engineering/research role access to source repositories; departure context significantly elevates motivation; staging typically required; well-documented at technology companies |
 | **Minimum Maturity Level** | 3 |
 
 ---

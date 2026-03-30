@@ -13,6 +13,8 @@
 | **Category Code** | UA |
 | **Actor Archetype(s)** | MAL, COM |
 | **Severity** | High |
+| **Impact Score** | Moderate — access to systems beyond normal job scope; data exposure depends on what is accessed; often a precursor indicator for higher-severity scenarios (DE, SB) rather than a standalone harm event |
+| **Likelihood Score** | High — standard user credentials, normal login interface, after-hours timing provides minimal evasion with no additional tools required, well-documented as a recurring behavioral pattern |
 | **Minimum Maturity Level** | 2 |
 
 ---

@@ -13,6 +13,8 @@
 | **Category Code** | DE |
 | **Actor Archetype(s)** | MAL, NEG |
 | **Severity** | Critical |
+| **Impact Score** | Catastrophic — Data (bulk PII/IP at scale, breach notification required), Legal/Regulatory (mandatory external notification), Reputational (customer breach letters) |
+| **Likelihood Score** | High — standard user access, browser-only tools, blends with normal cloud activity, most commonly observed insider exfiltration method |
 | **Minimum Maturity Level** | 2 |
 
 ---

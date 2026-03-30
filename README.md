@@ -225,6 +225,7 @@ Step-by-step guides for each major framework activity:
 | Conducting a threat hunt | [docs/processes/threat-hunting-guide.md](docs/processes/threat-hunting-guide.md) |
 | Developing a detection rule | [docs/processes/detection-development-guide.md](docs/processes/detection-development-guide.md) |
 | Running a simulation test | [simulation/README.md](simulation/README.md) |
+| Assigning severity ratings | [docs/severity-classification.md](docs/severity-classification.md) |
 | Running a tabletop exercise | [docs/tabletop-exercise-guide.md](docs/tabletop-exercise-guide.md) |
 | Integrating with SOAR | [docs/soar-integration.md](docs/soar-integration.md) |
 | Workflow diagrams (all processes) | [docs/processes/workflow-diagrams.md](docs/processes/workflow-diagrams.md) |

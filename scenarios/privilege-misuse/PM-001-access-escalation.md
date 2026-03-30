@@ -13,6 +13,8 @@
 | **Category Code** | PM |
 | **Actor Archetype(s)** | MAL |
 | **Severity** | High |
+| **Impact Score** | Severe — unauthorized access to systems containing sensitive data, significant compliance exposure (SOX, HIPAA depending on systems accessed), potential for credential escalation to privileged scope |
+| **Likelihood Score** | Medium — requires elevated IT or admin role with visibility into access control gaps; technical knowledge of permission structures needed; common in IT/DevOps populations with over-provisioned accounts |
 | **Minimum Maturity Level** | 3 |
 
 ---

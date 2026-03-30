@@ -13,6 +13,8 @@
 | **Category Code** | SB |
 | **Actor Archetype(s)** | MAL |
 | **Severity** | Critical |
+| **Impact Score** | Catastrophic — Data (complete production data loss), Operational (critical system destroyed, multi-day recovery), Financial (DR costs, SLA penalties, regulatory exposure), Legal (mandatory notification if customer data lost) |
+| **Likelihood Score** | Medium — requires DBA or sysadmin privilege and SQL knowledge; rare but high-profile; limited to privileged-access population |
 | **Minimum Maturity Level** | 3 |
 
 ---
