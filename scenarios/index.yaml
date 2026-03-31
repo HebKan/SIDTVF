@@ -309,8 +309,8 @@ scenarios:
     category_code: PV
     status: Active
     version: "1.0"
-    last_updated: "2026-03-26"
-    severity: Medium
+    last_updated: "2026-03-30"
+    severity: High
     maturity_min: 2
     actors:
       - NEG

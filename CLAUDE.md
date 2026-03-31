@@ -42,6 +42,7 @@ SIDTVF is an insider threat detection and validation framework designed for use 
 | `mapping/compliance.md` | Compliance framework mapping | When scenarios or compliance controls change |
 | `metrics/kpis.md` | KPI definitions | When metrics or measurement methods change |
 | `docs/getting-started.md` | Day 1 onboarding guide | When the recommended starting path changes |
+| `docs/severity-classification.md` | Severity rating reference (impact/likelihood dimensions, matrix, examples) | When severity criteria or examples change |
 | `docs/coverage-matrix.md` | Artifact coverage per scenario | When any artifact is added or scenario is added |
 | `docs/policies/*.md` | Policy templates | When legal requirements or monitoring scope changes |
 | `docs/starter-packs/*.md` | Industry starter packs | When scenario priorities or regulations change |
@@ -199,6 +200,17 @@ When a change is made in one file, the following cascade updates are required:
 ---
 
 ## Content Standards
+
+### Severity Ratings
+
+- Every scenario must have a `Severity` field, an `Impact Score`, and a `Likelihood Score`
+- Use the scoring worksheet in `docs/severity-classification.md` — do not assign severity by intuition alone
+- Impact Score = the highest single dimension across Data, Financial, Operational, Legal/Regulatory, and Reputational impact
+- Likelihood Score = judgment across Actor Access Requirement, Technical Sophistication, Evasion Effort, and Observed Frequency
+- Severity is derived from the matrix: Critical/High/Medium/Low — never assign severity without recording the contributing scores
+- Do not downgrade severity because existing controls may prevent the scenario — controls affect likelihood, not harm potential
+- Do not upgrade severity based on actor motivation alone — motivation belongs in the Actor Profile field, not the severity rating
+- When severity is disputed, the tie-breaking rule is: **err toward the higher tier** and document the rationale for a future review
 
 ### Scenario Narratives
 

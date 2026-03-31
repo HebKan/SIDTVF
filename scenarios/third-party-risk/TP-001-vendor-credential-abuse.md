@@ -13,6 +13,8 @@
 | **Category Code** | TP |
 | **Actor Archetype(s)** | TP, MAL |
 | **Severity** | Critical |
+| **Impact Score** | Catastrophic — vendors with administrative access can reach full scope of supported systems; Data (complete access to supported environments), Operational (can take systems offline or introduce backdoors), Legal (contractual breach, HIPAA BAA or SOX implications for regulated vendors) |
+| **Likelihood Score** | Medium — requires vendor account (pre-provisioned), vendor activity mimics legitimate maintenance, third-party monitoring gaps are pervasive; actor pool limited to vendor personnel |
 | **Minimum Maturity Level** | 3 |
 
 ---

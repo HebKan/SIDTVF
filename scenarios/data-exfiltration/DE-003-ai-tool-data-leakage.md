@@ -10,6 +10,8 @@
 | **Created** | 2026-03-26 |
 | **Last Updated** | 2026-03-26 |
 | **Severity** | High (Critical if PHI, MNPI, or trade secrets confirmed) |
+| **Impact Score** | Moderate baseline — internal confidential data in AI training context; escalates to Catastrophic if regulated data (PHI → HIPAA, MNPI → SEC, trade secrets → DTSA) is confirmed in session logs |
+| **Likelihood Score** | High — any employee with internet access, consumer AI tools require no technical knowledge, structurally invisible to endpoint DLP, AI tool use is ubiquitous across enterprise populations |
 | **Minimum Maturity Level** | 2 |
 | **Actor Archetype(s)** | NEG, MAL |
 | **MITRE ATT&CK Version** | Enterprise v15 |

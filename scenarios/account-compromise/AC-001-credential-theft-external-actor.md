@@ -13,6 +13,8 @@
 | **Category Code** | AC |
 | **Actor Archetype(s)** | COM |
 | **Severity** | Critical |
+| **Impact Score** | Catastrophic — external actor inherits insider's full authorized access scope; Data, Financial, Operational, Legal, and Reputational impact all at Catastrophic scale depending on the insider's role |
+| **Likelihood Score** | Medium — credential theft via phishing is highly common (widely available as a service); activity appears as legitimate insider behavior making detection extremely difficult; actor pool limited to external adversaries targeting the organization |
 | **Minimum Maturity Level** | 2 |
 
 ---

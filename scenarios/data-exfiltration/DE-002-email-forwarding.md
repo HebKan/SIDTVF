@@ -13,6 +13,8 @@
 | **Category Code** | DE |
 | **Actor Archetype(s)** | MAL, NEG |
 | **Severity** | High |
+| **Impact Score** | Moderate — ongoing email stream exposure (variable data sensitivity, not a bulk dump); breach reporting possible if PII confirmed but not certain |
+| **Likelihood Score** | High — any M365/Google Workspace user, OWA UI only, rule persists silently with no visible indicator, well-documented in incident data |
 | **Minimum Maturity Level** | 2 |
 
 ---

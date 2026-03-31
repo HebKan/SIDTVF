@@ -21,13 +21,34 @@
 | **Category Code** | [Code, e.g., DE] |
 | **Actor Archetype(s)** | [MAL / NEG / COM / TP — select all that apply] |
 | **Severity** | Critical / High / Medium / Low |
+| **Impact Score** | Catastrophic / Severe / Moderate / Minor |
+| **Likelihood Score** | High / Medium / Low |
 | **Minimum Maturity Level** | [1–5 — minimum program maturity required to detect this scenario] |
 
-> **Severity Guide:**
-> - **Critical:** High likelihood, catastrophic impact (trade secret theft, mass PII exfiltration, sabotage)
-> - **High:** High likelihood or high impact (significant data loss, major compliance exposure)
-> - **Medium:** Moderate likelihood or impact (policy violations with meaningful consequence)
-> - **Low:** Low likelihood or low impact (minor policy deviation, unlikely to cause lasting harm)
+> **Severity Guide:** Severity = Impact × Likelihood. Use [docs/severity-classification.md](../docs/severity-classification.md) for the full scoring worksheet and dimension criteria.
+>
+> **Impact Score** — rate the *highest* of these five dimensions:
+> - **Data Impact:** volume and sensitivity of data at risk (Catastrophic = >10K regulated records or full IP/trade secret)
+> - **Financial Impact:** direct loss or fine exposure (Catastrophic = >$1M or SEC enforcement trigger)
+> - **Operational Impact:** disruption to systems or services (Catastrophic = critical system destroyed, multi-day recovery)
+> - **Legal/Regulatory Impact:** compliance obligations triggered (Catastrophic = mandatory external notification, criminal referral)
+> - **Reputational Impact:** external disclosure risk (Catastrophic = breach notification letters, press exposure)
+>
+> **Likelihood Score** — average judgment across four dimensions:
+> - **Actor Access:** High = standard user access; Medium = departmental privilege; Low = elevated/admin; Very Low = restricted/multi-party approval
+> - **Technical Sophistication:** High = browser/email/USB only; Medium = basic scripting; Low = security control knowledge required; Very Low = advanced evasion or exploitation
+> - **Evasion Effort:** High = none required (behavior is invisible or unmonitored); Medium = minimal (after-hours, personal account); Low = deliberate staging; Very Low = active counter-detection
+> - **Observed Frequency:** High = multiple enterprise incidents/year, well-documented; Medium = regularly observed; Low = occasional; Very Low = rare
+>
+> **Severity Matrix:**
+> ```
+> Impact ↓ / Likelihood →  | High     | Medium   | Low
+> ─────────────────────────────────────────────────────
+> Catastrophic              | Critical | Critical | High
+> Severe                    | High     | High     | Medium
+> Moderate                  | High     | Medium   | Low
+> Minor                     | Medium   | Low      | Low
+> ```
 
 ---
 
