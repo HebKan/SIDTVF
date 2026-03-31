@@ -256,6 +256,7 @@ Step-by-step guides for each major framework activity:
 |-----------|-------------|
 | Behavior over Signature | Detect what users do, not the specific tools they use |
 | Scenario before Detection | Define the threat first, then write the rule |
+| Method and Vector Matter | Severity accounts for whether the attack method is inherently visible to monitoring — Bluetooth, USB, hardwire, and screen capture produce no network log regardless of actor behavior |
 | Validate Continuously | Controls are tested regularly, not just after deployment |
 | Legal First | All program activity must be reviewed against applicable law and policy |
 | Measure Everything | Every program activity should produce a measurable outcome |

@@ -206,8 +206,10 @@ When a change is made in one file, the following cascade updates are required:
 - Every scenario must have a `Severity` field, an `Impact Score`, and a `Likelihood Score`
 - Use the scoring worksheet in `docs/severity-classification.md` — do not assign severity by intuition alone
 - Impact Score = the highest single dimension across Data, Financial, Operational, Legal/Regulatory, and Reputational impact
-- Likelihood Score = judgment across Actor Access Requirement, Technical Sophistication, Evasion Effort, and Observed Frequency
+- Likelihood Score = judgment across five dimensions: Actor Access Requirement, Technical Sophistication, Evasion Effort (actor behavior), Observed Frequency, and Attack Vector Detectability (method property)
+- **Attack Vector Detectability (Dimension 5)** is an inherent property of the *method* — Bluetooth, hardwire, USB, NFC, screen photograph, and verbal/cognitive disclosure are rated High because they produce no corporate log event regardless of actor behavior; use the Attack Vector Reference Table in `docs/severity-classification.md`
 - Severity is derived from the matrix: Critical/High/Medium/Low — never assign severity without recording the contributing scores
+- Do not conflate Evasion Effort (D3) with Attack Vector Detectability (D5) — D3 is what the actor does; D5 is what the method is
 - Do not downgrade severity because existing controls may prevent the scenario — controls affect likelihood, not harm potential
 - Do not upgrade severity based on actor motivation alone — motivation belongs in the Actor Profile field, not the severity rating
 - When severity is disputed, the tie-breaking rule is: **err toward the higher tier** and document the rationale for a future review

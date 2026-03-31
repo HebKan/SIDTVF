@@ -34,11 +34,12 @@
 > - **Legal/Regulatory Impact:** compliance obligations triggered (Catastrophic = mandatory external notification, criminal referral)
 > - **Reputational Impact:** external disclosure risk (Catastrophic = breach notification letters, press exposure)
 >
-> **Likelihood Score** — average judgment across four dimensions:
-> - **Actor Access:** High = standard user access; Medium = departmental privilege; Low = elevated/admin; Very Low = restricted/multi-party approval
-> - **Technical Sophistication:** High = browser/email/USB only; Medium = basic scripting; Low = security control knowledge required; Very Low = advanced evasion or exploitation
-> - **Evasion Effort:** High = none required (behavior is invisible or unmonitored); Medium = minimal (after-hours, personal account); Low = deliberate staging; Very Low = active counter-detection
-> - **Observed Frequency:** High = multiple enterprise incidents/year, well-documented; Medium = regularly observed; Low = occasional; Very Low = rare
+> **Likelihood Score** — average judgment across five dimensions:
+> - **Actor Access (D1):** High = standard user access; Medium = departmental privilege; Low = elevated/admin; Very Low = restricted/multi-party approval
+> - **Technical Sophistication (D2):** High = browser/email/USB/Bluetooth only; Medium = basic scripting; Low = security control knowledge required; Very Low = advanced evasion or exploitation
+> - **Evasion Effort (D3):** What the *actor actively chooses to do* to hide behavior. High = none required; Medium = minimal (after-hours, personal account); Low = deliberate staging; Very Low = active counter-detection
+> - **Observed Frequency (D4):** High = multiple enterprise incidents/year, well-documented; Medium = regularly observed; Low = occasional; Very Low = rare
+> - **Attack Vector Detectability (D5):** Inherent visibility of the *method itself* to enterprise monitoring, independent of actor behavior. High = method produces no log event by design (Bluetooth, USB, hardwire, screen photo, verbal); Medium = requires additional tools (CASB, EDR removable media policy, TLS inspection); Low = metadata visible, content obscured (VPN, covert channel); Very Low = fully inspectable by default (corporate email gateway, file share audit logs). See Attack Vector Reference Table in [docs/severity-classification.md](../docs/severity-classification.md).
 >
 > **Severity Matrix:**
 > ```

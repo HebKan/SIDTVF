@@ -104,7 +104,9 @@ In practice: **your Impact Score equals the highest single dimension rating.** T
 
 ## Part 2 — Likelihood Assessment
 
-Likelihood is assessed across four dimensions. Unlike impact (where the highest dimension anchors the score), likelihood is an average judgment across all four dimensions.
+Likelihood is assessed across five dimensions. Unlike impact (where the highest dimension anchors the score), likelihood is an average judgment across all five dimensions.
+
+> **Important distinction:** Dimension 3 (Detection Evasion Effort) captures *active choices the actor makes* to hide their behavior. Dimension 5 (Attack Vector Detectability) captures an *inherent property of the method itself* — some methods are structurally invisible to enterprise monitoring regardless of what the actor does or does not do.
 
 ### Likelihood Dimensions
 
@@ -125,21 +127,21 @@ What skill level does the actor need to successfully execute the scenario?
 
 | Rating | Criteria |
 |--------|----------|
-| **High** | None — uses only standard business tools (web browser, email client, USB drive, SaaS application); no technical knowledge beyond normal job requirements |
+| **High** | None — uses only standard business tools (web browser, email client, USB drive, SaaS application, Bluetooth pairing); no technical knowledge beyond normal job requirements |
 | **Medium** | Low — basic technical knowledge sufficient (PowerShell or command-line familiarity, basic scripting, understanding of file transfers); available in general IT-literate population |
 | **Low** | Medium — requires understanding of security controls, logging behavior, or system internals; most employees cannot do this without research |
 | **Very Low** | High — requires advanced knowledge: detection evasion techniques, custom tool development, exploitation of vulnerabilities, or deep understanding of the target system |
 
 #### Dimension 3: Detection Evasion Effort
 
-How much deliberate effort is required to avoid triggering existing controls?
+How much *deliberate, active effort* by the actor is required to avoid triggering existing controls?
 
 | Rating | Criteria |
 |--------|----------|
-| **High** | None required — behavior either blends with normal activity, is not currently monitored, or is structurally invisible to common controls (e.g., AI tool input, screen capture) |
+| **High** | None required — the behavior either blends with normal activity or is currently unmonitored; no deliberate change in actor behavior is needed |
 | **Medium** | Minimal — basic behavioral adjustments sufficient (working after hours, breaking a large action into smaller ones, using a personal account) |
-| **Low** | Moderate — requires staging data, using encrypted channels, choosing less-monitored paths, or exploiting monitoring gaps deliberately |
-| **Very Low** | Significant — requires active counter-detection measures: disabling logs, living-off-the-land technique selection, deliberate log tampering, or operational security planning |
+| **Low** | Moderate — requires deliberate staging, encrypted channels, choosing less-monitored paths, or exploiting monitoring gaps |
+| **Very Low** | Significant — requires active counter-detection measures: disabling logs, living-off-the-land technique selection, deliberate log tampering, or sustained operational security planning |
 
 #### Dimension 4: Observed Frequency
 
@@ -152,17 +154,58 @@ How often does this category of behavior occur in real enterprise environments, 
 | **Low** | Occasional — occurs but is not routine; requires specific opportunity or motivation; fewer documented cases in public reporting |
 | **Very Low** | Rare — few documented enterprise cases; requires highly unusual access, motivation, or opportunity; specialist threat actor profile |
 
+#### Dimension 5: Attack Vector Detectability
+
+How visible is the attack *method itself* to typical enterprise monitoring infrastructure, independent of any actor evasion behavior?
+
+This dimension answers: "Even if the actor does nothing to hide their actions, would standard enterprise logging capture this method at all?"
+
+| Rating | Criteria |
+|--------|----------|
+| **High** | Method is inherently invisible to enterprise monitoring — uses physical or out-of-band channels with no corporate digital footprint (Bluetooth transfer, hardwire/Thunderbolt to personal device, USB to personal storage, NFC, screen photograph with personal camera, verbal or cognitive disclosure). No network, endpoint, or DLP log will capture the event regardless of configuration. |
+| **Medium** | Method requires *additional* tool deployment beyond baseline logging to detect — the event does not appear in standard log sources without specific investment (removable media tracking via EDR policy, SaaS app monitoring via CASB, print activity via print server audit logging, personal webmail content via TLS inspection). Without those tools deployed, the method leaves no log trail. |
+| **Low** | Method transits partially monitored paths but content is obscured without additional configuration — network traffic is visible but payload is encrypted or encoded (personal VPN tunnel, DNS exfiltration, HTTPS covert channel, steganography in image uploads, AI tool input via HTTPS without CASB). Metadata is visible; content is not. |
+| **Very Low** | Method inherently transits fully monitored, inspectable infrastructure — corporate email gateway, DLP-inspected network path, file server with audit logging enabled, SIEM-forwarded application logs. Standard baseline logging captures the event without additional tool investment. |
+
+---
+
+### Attack Vector Reference Table
+
+Use this table when assigning Dimension 5 ratings and to quickly look up how a specific method scores across all likelihood dimensions. Each row represents a distinct exfiltration or attack method.
+
+| Method | D1: Access | D2: Skill | D3: Actor Evasion | D4: Frequency | D5: Vector Detectability | Notes |
+|--------|-----------|-----------|-------------------|---------------|--------------------------|-------|
+| **Bluetooth file transfer** | High | High | High (no effort needed) | Low | **High** | Completely off-network; no corporate log captures Bluetooth data transfer on most endpoints without specific MDM/EDR policy |
+| **USB / removable media** | High | High | High | Medium | **High** (Medium w/ EDR) | Bypasses network monitoring entirely; EDR with removable media policy can capture it; without EDR, leaves no trace |
+| **Hardwire to external device** (Thunderbolt, direct cable, external drive) | High | Medium | High | Low | **High** | Faster than USB; high throughput enables GB-scale exfil in minutes; no network log; requires physical access to device |
+| **NFC transfer** | High | High | High | Very Low | **High** | Very short range; typically limited to mobile-to-device; rare but zero network footprint |
+| **Screen photograph with personal camera / smartphone** | High | High | High | Low | **High** | No corporate digital footprint; captures content rendered on screen; undetectable by any logging system |
+| **Verbal or cognitive disclosure** (memorizing, dictating, spoken briefing) | High | Medium | High | Very Low | **High** | No technical artifact of any kind; only behavioral and contextual indicators; relevant to regulated environments where screen is restricted |
+| **Printing sensitive documents** | High | High | Medium | Low | **Medium** | Print server audit logging required; often disabled or not forwarded to SIEM; physical document leaves no copy-control mechanism |
+| **Personal webmail** (Gmail, Outlook.com, ProtonMail) via corporate network | High | High | Medium | High | **Medium** | Traffic visible to proxy as HTTPS; TLS inspection required to see content; without inspection, only domain and volume visible |
+| **Consumer AI tool** (ChatGPT, Claude, Gemini, Copilot) via corporate network | High | High | High | High | **Medium** | HTTPS traffic visible to proxy; content encrypted; CASB required to inspect session content; structurally invisible to endpoint DLP |
+| **Unsanctioned cloud storage** (Dropbox, personal Google Drive, WeTransfer) | High | High | Medium | High | **Medium** | Domain visible to proxy; file names and content not inspectable without TLS inspection or CASB |
+| **Personal VPN / encrypted tunnel** | Medium | Medium | Low | Low | **Low** | Traffic visible as VPN tunnel to firewall; destination IP visible but content entirely encrypted; volume anomaly detection possible |
+| **DNS exfiltration** (data encoded in DNS queries) | Low | Very Low | Low | Very Low | **Low** | DNS query volume and destination visible; content encoding detectable with DNS anomaly analytics; requires specialist knowledge to implement |
+| **HTTPS covert channel / steganography** | Low | Very Low | Low | Very Low | **Low** | Payload hidden in legitimate-looking traffic or image uploads; metadata visible; content decoding requires specialized detection |
+| **Corporate email via gateway** | High | High | Very Low | High | **Very Low** | Fully inspectable by email gateway, DLP, and archiving; highest-visibility exfiltration channel in most enterprises |
+| **Corporate file share / SharePoint** | High | High | Very Low | High | **Very Low** | Full audit logging available natively; copy, move, and download events recorded; baseline visibility without additional tooling |
+| **SaaS application with API** (Salesforce export, Workday report, ERP data pull) | Medium | Medium | Low | Medium | **Very Low** | API activity logged natively; export volumes detectable; SIEM integration captures events |
+| **SFTP / FTP to external server** | Medium | Medium | Low | Low | **Low** | Destination and volume visible to firewall; content not inspectable without proxy; unusual for corporate environments and therefore higher-signal |
+
+> **How to use this table:** Identify the primary exfiltration or attack vector for the scenario. Read across the row to find the suggested dimension ratings. If the scenario uses multiple vectors (e.g., actor first stages data via USB, then transmits via personal email), apply the *least detectable* vector as your Dimension 5 rating — the attacker will complete the exfiltration via the path you cannot see.
+
 ---
 
 ### Deriving the Likelihood Score
 
-Assess each dimension, then apply this rule:
+Assess all five dimensions, then apply this rule:
 
 | Result | Criteria |
 |--------|----------|
-| **High Likelihood** | Three or more dimensions rated High; OR all four dimensions rated Medium or above |
-| **Medium Likelihood** | Two dimensions rated High and the rest Medium; OR three dimensions rated Medium and one rated Low |
-| **Low Likelihood** | The majority of dimensions rated Low or Very Low; OR access requirement is Very Low |
+| **High Likelihood** | Four or more dimensions rated High; OR all five dimensions rated Medium or above; OR Dimension 5 is rated High and three other dimensions are Medium or above |
+| **Medium Likelihood** | Three dimensions rated High and the rest Medium; OR four dimensions rated Medium; OR Dimension 5 is High but access requirement (D1) is Low or below |
+| **Low Likelihood** | The majority of dimensions rated Low or Very Low; OR access requirement is Very Low; OR Dimension 5 is Very Low and actor must work around the monitored channel |
 
 ---
 
@@ -301,10 +344,13 @@ IMPACT SCORE (highest single dimension):  ___________________________________
 
 LIKELIHOOD ASSESSMENT
 ─────────────────────────────────────────────────────────────────────────────
-Dimension 1 — Actor Access Req.:    [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
-Dimension 2 — Technical Sophist.:   [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
-Dimension 3 — Evasion Effort:       [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
-Dimension 4 — Observed Frequency:   [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
+Dimension 1 — Actor Access Req.:       [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
+Dimension 2 — Technical Sophist.:      [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
+Dimension 3 — Evasion Effort (actor):  [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
+Dimension 4 — Observed Frequency:      [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
+Dimension 5 — Attack Vector (method):  [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
+  Vector used: ________________________________________________________________
+  Reference table rating: ______________________________________________________
 
 LIKELIHOOD SCORE (per rule in Part 2):  ____________________________________
 
@@ -325,6 +371,9 @@ Assigned by: __________________   Date: _______________   Reviewed by: _________
 | Treating likelihood as "how often does insider threat happen" | Likelihood is scenario-specific, not a general program concern | Rate each dimension for this specific scenario: what access, what skill, what evasion, how often in industry |
 | Upgrading severity based on actor motivation alone | A highly motivated actor with standard access executing a low-impact behavior is still not Critical | Motivation informs the actor profile field, not severity; a disgruntled employee who leaks a non-sensitive internal memo is Medium at most |
 | Downgrading severity because "we have controls" | Severity reflects the harm if the scenario plays out; controls affect likelihood, not harm | If your DLP would stop the exfiltration, that reduces the likelihood dimension — but do not reduce the data impact rating based on the assumption that controls will work |
+| Conflating Evasion Effort (D3) with Attack Vector Detectability (D5) | "The actor used Bluetooth so they were trying to evade detection" conflates a method property with an actor behavior | D3 asks what the actor *chose to do* to hide their actions; D5 asks whether the method *itself* produces a log event — a Bluetooth transfer by a careless actor is still High on D5 even if the actor made no effort to evade |
+| Rating a physical-channel attack as Low severity because it requires physical access | Physical presence at a device is a real enterprise condition, especially for departing employees | A hardwire copy of 50GB of source code on the last day of employment is Critical even though it requires physical access to a laptop; physical access does not reduce impact |
+| Using only network-based detection to validate scenarios that use physical or out-of-band vectors | Proxy logs and CASB cover network channels only | If the scenario uses Bluetooth, USB, or screen capture, validate detection via EDR removable media policy, physical security logs, or behavioral context — not network traffic |
 
 ---
 
@@ -332,4 +381,5 @@ Assigned by: __________________   Date: _______________   Reviewed by: _________
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.1 | 2026-03-31 | Added Dimension 5 (Attack Vector Detectability) to likelihood assessment; added Attack Vector Reference Table with 17 methods; updated scoring worksheet and calibration mistakes; updated deriving rule to 5 dimensions |
 | 1.0 | 2026-03-30 | Initial release — impact/likelihood dimensions, severity matrix, per-tier examples, scoring worksheet, calibration guide |
