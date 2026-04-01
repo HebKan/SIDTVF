@@ -1,217 +1,65 @@
 # SIDTVF Severity Classification Reference
 
-> **Document Version:** 1.0 | **Status:** Active | **Last Updated:** 2026-03-30
+> **Document Version:** 2.0 | **Status:** Active | **Last Updated:** 2026-04-01
 
 ---
 
 ## Overview
 
-Every SIDTVF scenario carries a single severity rating: **Critical**, **High**, **Medium**, or **Low**. This rating reflects the combination of two independent assessments:
+Every SIDTVF scenario carries a single severity rating: **Critical**, **High**, **Medium**, or **Low**. Severity is derived from two assessments — **Impact** and **Likelihood** — combined in a matrix.
 
-- **Impact** — how much harm results if the scenario plays out to completion
-- **Likelihood** — how probable it is that this scenario occurs in a typical enterprise environment
+**Most scenarios can be rated in under two minutes using Part 1.** The detailed sub-dimension reference in Parts 6 and 7 exists for borderline cases where a quick read is ambiguous. You do not need to score every sub-dimension for every scenario.
 
-Severity is not a property of the actor alone, the data type alone, or the detection difficulty alone. It is a structured judgment that accounts for all of these factors together. This document defines exactly how to make that judgment.
+> **Control validation and simulation tests** do not rate impact and likelihood from scratch — they inherit severity from the parent scenario. See Part 3.
 
 Use this document when:
-- Authoring a new scenario card and selecting the `Severity` field
+- Authoring a new scenario card and selecting the `Severity`, `Impact Score`, and `Likelihood Score` fields
 - Reviewing or challenging an existing severity assignment
-- Explaining severity ratings to non-technical stakeholders
-- Calibrating triage card escalation criteria
-
-Full template reference: [scenarios/_template.md](../scenarios/_template.md)
+- Explaining ratings to non-technical stakeholders
+- Calibrating SOC triage card escalation thresholds
 
 ---
 
-## Part 1 — Impact Assessment
+## Part 1 — Quick Rating (Use This First)
 
-Impact is assessed across five dimensions. Rate each dimension independently, then use the highest dimension score as your impact anchor.
-
-### Impact Dimensions
-
-#### Dimension 1: Data Impact
-
-What is the sensitivity and scale of data that could be exposed, stolen, or destroyed?
-
-| Rating | Criteria |
-|--------|----------|
-| **Catastrophic** | >10,000 records of PII, PHI, or MNPI; complete exfiltration of trade secrets, core IP, or proprietary algorithms; full database or data warehouse contents; data that triggers mandatory regulatory breach notification |
-| **Severe** | 1,000–10,000 records of sensitive data; significant confidential business data (financial forecasts, M&A plans, key customer contracts); partial but material IP exfiltration |
-| **Moderate** | <1,000 records of sensitive data; internal-only confidential data with limited external value; one department's data with no regulated data types |
-| **Minor** | Non-sensitive internal data only; publicly available or low-value information; no regulated data types (PII/PHI/MNPI/IP) involved |
-
-#### Dimension 2: Financial Impact
-
-What is the direct or reasonably foreseeable monetary consequence?
-
-| Rating | Criteria |
-|--------|----------|
-| **Catastrophic** | Direct monetary loss or regulatory fine exposure exceeding $1M; MNPI misuse capable of triggering SEC enforcement; ransomware-class financial disruption; market manipulation enabling material gain |
-| **Severe** | $100K–$1M in direct loss, legal costs, or regulatory fine exposure; material breach notification and remediation costs; significant contract penalties |
-| **Moderate** | $10K–$100K; limited remediation costs; minor regulatory fine exposure; no material financial loss to the organization |
-| **Minor** | Under $10K; cleanup and investigation costs only; no regulatory fine exposure; no direct financial loss |
-
-#### Dimension 3: Operational Impact
-
-What is the disruption to systems, services, or business processes?
-
-| Rating | Criteria |
-|--------|----------|
-| **Catastrophic** | Critical production system(s) taken offline or permanently destroyed; business continuity threatened; multi-day recovery required; broad customer or partner-facing service disruption |
-| **Severe** | Significant service degradation affecting a material user population; hours of recovery; a major business process (payroll, order processing, clinical operations) disrupted |
-| **Moderate** | Limited service impact; a single non-critical system affected; recovery under one hour; one team or department disrupted |
-| **Minor** | No service impact; investigation and cleanup only; no user-facing disruption |
-
-#### Dimension 4: Legal and Regulatory Impact
-
-What compliance obligations or legal consequences are triggered?
-
-| Rating | Criteria |
-|--------|----------|
-| **Catastrophic** | Mandatory external regulatory reporting triggered (HIPAA breach notification, GDPR Art. 33/34 notification, SEC Form 8-K); potential criminal referral; class action exposure; multi-jurisdiction reporting obligations |
-| **Severe** | Internal legal investigation required; potential civil liability; compliance audit or examination likely triggered; material contract breach |
-| **Moderate** | Legal review required but no external reporting obligation likely; internal policy violation documented; potential for regulatory scrutiny if pattern continues |
-| **Minor** | No regulatory trigger; internal HR action only; no legal counsel involvement required |
-
-#### Dimension 5: Reputational Impact
-
-What is the risk of reputational harm to the organization?
-
-| Rating | Criteria |
-|--------|----------|
-| **Catastrophic** | Material risk of public disclosure; customer or patient data breach requiring external notification letters; high probability of press coverage or regulatory public censure |
-| **Severe** | Customer or partner relationship risk; likely internal disclosure to executive leadership or board; potential for reputational harm if not contained |
-| **Moderate** | Team or department-level awareness; no customer or external visibility; limited executive attention required |
-| **Minor** | No material reputational risk; event is fully internal and containable |
+Answer two questions. Look up the result in the matrix in Part 2.
 
 ---
 
-### Deriving the Impact Score
+### Question 1: Impact
 
-Apply the following rule:
+**If this scenario plays out completely, what is the worst realistic outcome?**
 
-| If your highest dimension rating is... | ...and at least one other dimension is... | Impact Score |
-|---------------------------------------|-------------------------------------------|--------------|
-| Catastrophic | Any rating | **Catastrophic** |
-| Severe | Severe or higher | **Severe** |
-| Severe | Moderate or lower | **Severe** |
-| Moderate | Moderate or higher | **Moderate** |
-| Minor | Any rating | **Minor** |
+Pick the single tier that best matches. You do not need every bullet to apply — one is enough.
 
-In practice: **your Impact Score equals the highest single dimension rating.** The multi-dimension check is used to confirm whether to round up a borderline case.
+| Tier | It applies if any of the following are true |
+|------|---------------------------------------------|
+| **Catastrophic** | Regulated data exposed at scale (>1,000 PII, PHI, or MNPI records; OR any trade secret or core IP regardless of volume) · Critical system destroyed or permanently unrecoverable · Estimated harm exceeds $1M · External regulatory notification is mandatory (HIPAA breach, GDPR Art. 33/34, SEC 8-K) |
+| **Severe** | Sensitive data exposed at limited scale (<1,000 regulated records, or significant confidential business data) · Major business process disrupted for hours · Estimated harm $100K–$1M · Internal legal investigation required |
+| **Moderate** | Internal non-regulated data exposed · Single system disrupted with recovery under one hour · Estimated harm under $100K · Policy violation with real organizational consequence but no external reporting obligation |
+| **Minor** | No sensitive or regulated data involved · No service disruption · Negligible financial exposure · Fully reversible · Policy violation only |
 
----
-
-## Part 2 — Likelihood Assessment
-
-Likelihood is assessed across five dimensions. Unlike impact (where the highest dimension anchors the score), likelihood is an average judgment across all five dimensions.
-
-> **Important distinction:** Dimension 3 (Detection Evasion Effort) captures *active choices the actor makes* to hide their behavior. Dimension 5 (Attack Vector Detectability) captures an *inherent property of the method itself* — some methods are structurally invisible to enterprise monitoring regardless of what the actor does or does not do.
-
-### Likelihood Dimensions
-
-#### Dimension 1: Actor Access Requirement
-
-What level of organizational access does an actor need to execute this scenario?
-
-| Rating | Criteria |
-|--------|----------|
-| **High** | Standard user access — any employee with a laptop and a corporate account can execute this scenario without needing elevated permissions |
-| **Medium** | Departmental or functional access — a member of a specific team (finance, IT, HR, DevOps) with their normal access level can execute this |
-| **Low** | Elevated or privileged access required — DBA, system administrator, security engineer, or someone with special approvals needed |
-| **Very Low** | Highly restricted access — root-level, security-team-only, or access that requires multi-party approval to obtain |
-
-#### Dimension 2: Technical Sophistication Required
-
-What skill level does the actor need to successfully execute the scenario?
-
-| Rating | Criteria |
-|--------|----------|
-| **High** | None — uses only standard business tools (web browser, email client, USB drive, SaaS application, Bluetooth pairing); no technical knowledge beyond normal job requirements |
-| **Medium** | Low — basic technical knowledge sufficient (PowerShell or command-line familiarity, basic scripting, understanding of file transfers); available in general IT-literate population |
-| **Low** | Medium — requires understanding of security controls, logging behavior, or system internals; most employees cannot do this without research |
-| **Very Low** | High — requires advanced knowledge: detection evasion techniques, custom tool development, exploitation of vulnerabilities, or deep understanding of the target system |
-
-#### Dimension 3: Detection Evasion Effort
-
-How much *deliberate, active effort* by the actor is required to avoid triggering existing controls?
-
-| Rating | Criteria |
-|--------|----------|
-| **High** | None required — the behavior either blends with normal activity or is currently unmonitored; no deliberate change in actor behavior is needed |
-| **Medium** | Minimal — basic behavioral adjustments sufficient (working after hours, breaking a large action into smaller ones, using a personal account) |
-| **Low** | Moderate — requires deliberate staging, encrypted channels, choosing less-monitored paths, or exploiting monitoring gaps |
-| **Very Low** | Significant — requires active counter-detection measures: disabling logs, living-off-the-land technique selection, deliberate log tampering, or sustained operational security planning |
-
-#### Dimension 4: Observed Frequency
-
-How often does this category of behavior occur in real enterprise environments, based on industry reporting?
-
-| Rating | Criteria |
-|--------|----------|
-| **High** | Very common — multiple incidents per year in mid-to-large enterprises; extensively documented in CERT, Verizon DBIR, or industry breach reports; well-understood by security teams |
-| **Medium** | Common — observed regularly across the industry; specialist knowledge required to execute but threat actors are known to use it; documented in threat intelligence |
-| **Low** | Occasional — occurs but is not routine; requires specific opportunity or motivation; fewer documented cases in public reporting |
-| **Very Low** | Rare — few documented enterprise cases; requires highly unusual access, motivation, or opportunity; specialist threat actor profile |
-
-#### Dimension 5: Attack Vector Detectability
-
-How visible is the attack *method itself* to typical enterprise monitoring infrastructure, independent of any actor evasion behavior?
-
-This dimension answers: "Even if the actor does nothing to hide their actions, would standard enterprise logging capture this method at all?"
-
-| Rating | Criteria |
-|--------|----------|
-| **High** | Method is inherently invisible to enterprise monitoring — uses physical or out-of-band channels with no corporate digital footprint (Bluetooth transfer, hardwire/Thunderbolt to personal device, USB to personal storage, NFC, screen photograph with personal camera, verbal or cognitive disclosure). No network, endpoint, or DLP log will capture the event regardless of configuration. |
-| **Medium** | Method requires *additional* tool deployment beyond baseline logging to detect — the event does not appear in standard log sources without specific investment (removable media tracking via EDR policy, SaaS app monitoring via CASB, print activity via print server audit logging, personal webmail content via TLS inspection). Without those tools deployed, the method leaves no log trail. |
-| **Low** | Method transits partially monitored paths but content is obscured without additional configuration — network traffic is visible but payload is encrypted or encoded (personal VPN tunnel, DNS exfiltration, HTTPS covert channel, steganography in image uploads, AI tool input via HTTPS without CASB). Metadata is visible; content is not. |
-| **Very Low** | Method inherently transits fully monitored, inspectable infrastructure — corporate email gateway, DLP-inspected network path, file server with audit logging enabled, SIEM-forwarded application logs. Standard baseline logging captures the event without additional tool investment. |
+> **Tip:** If you are uncertain between two tiers, choose the higher one and note the rationale. Severity can be revised downward with evidence; under-rating a Critical scenario creates unacceptable risk.
 
 ---
 
-### Attack Vector Reference Table
+### Question 2: Likelihood
 
-Use this table when assigning Dimension 5 ratings and to quickly look up how a specific method scores across all likelihood dimensions. Each row represents a distinct exfiltration or attack method.
+**How probable is this scenario in a typical enterprise environment?**
 
-| Method | D1: Access | D2: Skill | D3: Actor Evasion | D4: Frequency | D5: Vector Detectability | Notes |
-|--------|-----------|-----------|-------------------|---------------|--------------------------|-------|
-| **Bluetooth file transfer** | High | High | High (no effort needed) | Low | **High** | Completely off-network; no corporate log captures Bluetooth data transfer on most endpoints without specific MDM/EDR policy |
-| **USB / removable media** | High | High | High | Medium | **High** (Medium w/ EDR) | Bypasses network monitoring entirely; EDR with removable media policy can capture it; without EDR, leaves no trace |
-| **Hardwire to external device** (Thunderbolt, direct cable, external drive) | High | Medium | High | Low | **High** | Faster than USB; high throughput enables GB-scale exfil in minutes; no network log; requires physical access to device |
-| **NFC transfer** | High | High | High | Very Low | **High** | Very short range; typically limited to mobile-to-device; rare but zero network footprint |
-| **Screen photograph with personal camera / smartphone** | High | High | High | Low | **High** | No corporate digital footprint; captures content rendered on screen; undetectable by any logging system |
-| **Verbal or cognitive disclosure** (memorizing, dictating, spoken briefing) | High | Medium | High | Very Low | **High** | No technical artifact of any kind; only behavioral and contextual indicators; relevant to regulated environments where screen is restricted |
-| **Printing sensitive documents** | High | High | Medium | Low | **Medium** | Print server audit logging required; often disabled or not forwarded to SIEM; physical document leaves no copy-control mechanism |
-| **Personal webmail** (Gmail, Outlook.com, ProtonMail) via corporate network | High | High | Medium | High | **Medium** | Traffic visible to proxy as HTTPS; TLS inspection required to see content; without inspection, only domain and volume visible |
-| **Consumer AI tool** (ChatGPT, Claude, Gemini, Copilot) via corporate network | High | High | High | High | **Medium** | HTTPS traffic visible to proxy; content encrypted; CASB required to inspect session content; structurally invisible to endpoint DLP |
-| **Unsanctioned cloud storage** (Dropbox, personal Google Drive, WeTransfer) | High | High | Medium | High | **Medium** | Domain visible to proxy; file names and content not inspectable without TLS inspection or CASB |
-| **Personal VPN / encrypted tunnel** | Medium | Medium | Low | Low | **Low** | Traffic visible as VPN tunnel to firewall; destination IP visible but content entirely encrypted; volume anomaly detection possible |
-| **DNS exfiltration** (data encoded in DNS queries) | Low | Very Low | Low | Very Low | **Low** | DNS query volume and destination visible; content encoding detectable with DNS anomaly analytics; requires specialist knowledge to implement |
-| **HTTPS covert channel / steganography** | Low | Very Low | Low | Very Low | **Low** | Payload hidden in legitimate-looking traffic or image uploads; metadata visible; content decoding requires specialized detection |
-| **Corporate email via gateway** | High | High | Very Low | High | **Very Low** | Fully inspectable by email gateway, DLP, and archiving; highest-visibility exfiltration channel in most enterprises |
-| **Corporate file share / SharePoint** | High | High | Very Low | High | **Very Low** | Full audit logging available natively; copy, move, and download events recorded; baseline visibility without additional tooling |
-| **SaaS application with API** (Salesforce export, Workday report, ERP data pull) | Medium | Medium | Low | Medium | **Very Low** | API activity logged natively; export volumes detectable; SIEM integration captures events |
-| **SFTP / FTP to external server** | Medium | Medium | Low | Low | **Low** | Destination and volume visible to firewall; content not inspectable without proxy; unusual for corporate environments and therefore higher-signal |
+Consider access requirements, skill level, how easily the method evades monitoring, and how often this type of behavior is observed. Pick the single tier that best fits.
 
-> **How to use this table:** Identify the primary exfiltration or attack vector for the scenario. Read across the row to find the suggested dimension ratings. If the scenario uses multiple vectors (e.g., actor first stages data via USB, then transmits via personal email), apply the *least detectable* vector as your Dimension 5 rating — the attacker will complete the exfiltration via the path you cannot see.
+| Tier | Typical indicators |
+|------|--------------------|
+| **High** | Standard user access is sufficient · No technical skill beyond everyday tools · Behavior blends with normal activity, OR the attack method is inherently invisible to monitoring (physical or out-of-band: Bluetooth, USB, hardwire connection, screen photo, verbal disclosure) · Documented frequently across enterprises |
+| **Medium** | Requires departmental or elevated access · Basic technical knowledge needed · Method is partially monitored (requires CASB, TLS inspection, or EDR to see) · Observed regularly but not ubiquitously |
+| **Low** | Requires privileged or highly restricted access · Significant skill or insider knowledge required · Method transits well-monitored infrastructure by default · Rarely observed in industry reporting |
+
+> **Attack method matters for likelihood.** An exfiltration via Bluetooth or a hardwire connection to a personal device produces no network or endpoint log regardless of actor behavior — that makes detection structurally harder and likelihood effectively higher. See the Attack Vector Reference Table in Part 7 for common methods and their detectability ratings.
 
 ---
 
-### Deriving the Likelihood Score
-
-Assess all five dimensions, then apply this rule:
-
-| Result | Criteria |
-|--------|----------|
-| **High Likelihood** | Four or more dimensions rated High; OR all five dimensions rated Medium or above; OR Dimension 5 is rated High and three other dimensions are Medium or above |
-| **Medium Likelihood** | Three dimensions rated High and the rest Medium; OR four dimensions rated Medium; OR Dimension 5 is High but access requirement (D1) is Low or below |
-| **Low Likelihood** | The majority of dimensions rated Low or Very Low; OR access requirement is Very Low; OR Dimension 5 is Very Low and actor must work around the monitored channel |
-
----
-
-## Part 3 — Severity Rating Matrix
-
-Combine your Impact Score and Likelihood Score using this matrix:
+## Part 2 — Severity Matrix
 
 |  | **High Likelihood** | **Medium Likelihood** | **Low Likelihood** |
 |--|---------------------|-----------------------|--------------------|
@@ -220,11 +68,33 @@ Combine your Impact Score and Likelihood Score using this matrix:
 | **Moderate Impact** | **High** | **Medium** | **Low** |
 | **Minor Impact** | **Medium** | **Low** | **Low** |
 
-### Reading the Matrix
+**Rules:**
+- Catastrophic impact is never below **High** regardless of likelihood — the potential harm alone justifies elevated response readiness.
+- Moderate impact with High likelihood is **High**, not Medium — common, easy-to-execute behaviors warrant active detection even when individual harm is limited.
+- Minor impact peaks at **Medium** — frequent occurrence does not override the ceiling on actual harm.
 
-- A catastrophic impact scenario is never below **High** regardless of likelihood — the potential harm is too severe to treat as low priority.
-- A moderate impact scenario can be **High** if the likelihood is high enough — common, easily executed scenarios warrant elevated response readiness even if each individual incident causes limited harm.
-- A minor impact scenario peaks at **Medium** — even if it occurs frequently, limited harm caps the escalation response required.
+---
+
+## Part 3 — Severity for Validation Tests and Simulation Tests
+
+**Control validation tests** (TC-[ID]) and **simulation tests** (SIM-[ID]) do not describe a real incident — they describe a test of whether a detection fires. For these artifacts, severity answers a different question:
+
+> *If this test reveals the detection does not work, how serious is that gap?*
+
+The answer is the same as the severity of the parent scenario being tested.
+
+| Artifact type | How to assign severity |
+|---------------|----------------------|
+| Scenario card | Rate using Parts 1 and 2 above |
+| Detection rule | Inherits severity from the parent scenario |
+| Validation test case (TC-[ID]) | Inherits severity from the parent scenario |
+| Simulation test (SIM-[ID]) | Inherits severity from the parent scenario |
+| Hunt hypothesis (HYP-[ID]) | Inherits severity from the parent scenario |
+| Playbook (PB-[ID]) | Inherits severity from the parent scenario |
+
+**Example:** A validation test for S3 exfiltration detection (TC-DE-001) is rated Critical — not because the test itself causes harm, but because a failed test means the organization cannot detect a Critical real-world scenario. The test's severity reflects the cost of the coverage gap, not the cost of the test.
+
+You do not need to rate impact dimensions like data sensitivity or financial loss for a test case. The parent scenario has already done that work. Simply copy the parent scenario's severity to all linked artifacts.
 
 ---
 
@@ -232,148 +102,183 @@ Combine your Impact Score and Likelihood Score using this matrix:
 
 ### Critical
 
-**Definition:** The scenario can result in catastrophic or severe irreversible harm across multiple dimensions, and is either highly likely or structurally difficult to prevent. Critical scenarios require the highest detection priority, pre-approved response playbooks, and direct executive awareness.
+**Definition:** Catastrophic harm is possible, and the scenario is either frequently executed by standard-access employees or structurally difficult to monitor. Requires the highest detection priority, pre-approved response playbooks, and direct executive notification on confirmation.
 
-**Typical characteristics:**
-- Mass regulated data exposure (PII, PHI, MNPI, or IP at scale)
-- Regulatory breach notification obligations triggered
-- Direct financial loss or enforcement risk exceeding $1M
-- Operational destruction that threatens business continuity
-- Executable by a standard-access employee using normal business tools
+**Characteristics:** Mass regulated data exposure · Mandatory external reporting triggered · >$1M financial harm · Operational destruction threatening business continuity · Often executable without elevated access or technical skill
 
-**Example scenarios:**
+**Examples:**
 
 | Scenario | Why Critical |
 |----------|-------------|
-| **SB-001** — Targeted Database Deletion | Catastrophic operational impact (production data destroyed), catastrophic data impact (complete data loss), highly motivated malicious insider, detection often comes after damage is done |
-| **DE-001** — Cloud Storage Upload Exfiltration | Catastrophic data impact (mass PII/IP at scale), High likelihood (any employee with cloud access), minimal evasion required, standard tools only |
-| **FR-001** — Invoice and Vendor Payment Manipulation | Catastrophic financial impact ($1M+ in wire fraud schemes), Medium-High likelihood (any finance team member), exploits approval workflow gaps, directly enriches actor |
-| **IP-001** — Source Code and Proprietary Algorithm Theft | Catastrophic data impact (core IP), legal exposure under DTSA, High actor motivation at offboarding, difficult to recover from once disclosed |
-| **AC-001** — Insider Account Compromise by External Actor | Catastrophic across all dimensions if privileged account is compromised; external actor uses insider's full access scope; difficult to distinguish from legitimate activity |
+| **DE-001** — Cloud Storage Upload Exfiltration | Any employee can execute using a browser; method is partially monitored without CASB; mass PII/IP exposure at scale; breach notification triggered |
+| **SB-001** — Targeted Database Deletion | Production data permanently destroyed; multi-day recovery; detection often arrives after damage is complete |
+| **FR-001** — Invoice and Vendor Payment Manipulation | $1M+ wire fraud achievable via standard ERP and email tools; finance team access is all that is required |
+| **IP-001** — Source Code Theft | Core IP and trade secrets; DTSA exposure; frequently motivated by departure; difficult to recover from once disclosed |
+| **AC-001** — Account Compromise by External Actor | External actor inherits full insider access scope; activity is indistinguishable from legitimate use |
 
 ---
 
 ### High
 
-**Definition:** The scenario can result in severe harm with a realistic probability of occurrence, or catastrophic harm that requires elevated access or technical sophistication (reducing likelihood). High scenarios require active detection coverage, response playbook readiness, and management escalation on confirmation.
+**Definition:** Severe harm is realistic, or catastrophic harm requires access or skill that limits the actor pool. Requires active detection coverage and management-level escalation on confirmation.
 
-**Typical characteristics:**
-- Significant data exposure (hundreds to thousands of records, or targeted confidential data)
-- Regulatory audit risk or civil liability
-- Financial loss in the $100K–$1M range
-- Service degradation for significant user populations
-- Requires departmental access or basic technical knowledge
+**Characteristics:** Significant sensitive data exposed · $100K–$1M harm · Legal investigation or audit risk · Requires departmental access or basic technical knowledge
 
-**Example scenarios:**
+**Examples:**
 
 | Scenario | Why High |
 |----------|---------|
-| **DE-002** — Email Auto-Forwarding Rule | Severe data impact (ongoing exfiltration of all email), Medium-High likelihood (any M365 user), minimal evasion (rule persists silently), often missed until departure |
-| **UA-001** — After-Hours Unauthorized System Access | Moderate-Severe data impact, High likelihood (credential theft or sharing is common), can be precursor to higher-severity scenarios |
-| **PM-001** — Privilege Escalation via Access Abuse | Severe impact if escalation is to admin-level systems, Medium likelihood, requires insider knowledge of access control gaps |
-| **TP-001** — Vendor Credential Abuse | Severe data and operational impact, Medium likelihood (vendors frequently over-provisioned), often undetected due to monitoring gaps for third-party accounts |
+| **DE-002** — Email Auto-Forwarding Rule | Any M365 user; rule persists silently with no visible indicator; ongoing exfiltration of all email; frequently missed until departure |
+| **UA-001** — After-Hours Unauthorized System Access | Standard credentials; well-documented pattern; common precursor to higher-severity scenarios |
+| **PM-001** — Privilege Escalation via Access Abuse | Significant compliance exposure if admin-level systems are reached; requires IT role but not rare |
+| **PV-001** — Shadow IT Data Storage | Any employee; extremely common; creates real data custody and governance risk even without malicious intent |
 
 ---
 
 ### Medium
 
-**Definition:** The scenario results in meaningful but contained harm, or has a moderate probability of occurring but with limited potential impact. Medium scenarios require documented detection coverage and response guidance, but do not require the same level of urgency as Critical or High.
+**Definition:** Meaningful but contained harm, or limited-impact scenarios that are highly probable. Requires documented detection and response guidance, but not the same urgency as Critical or High.
 
-**Typical characteristics:**
-- Data exposure is limited in scale or sensitivity (<1,000 records, no regulated types)
-- Financial impact under $100K
-- No immediate regulatory reporting trigger
-- Requires legal review but not mandatory external notification
-- Often involves negligent rather than malicious actors
-- Service impact limited to one team or department
+**Characteristics:** Internal non-regulated data only · Under $100K harm · No external reporting obligation · Often negligent actor · Policy violation with real consequence
 
-**Example scenarios:**
+**Examples:**
 
 | Scenario | Why Medium |
 |----------|-----------|
-| **DE-003** — AI Tool Data Leakage (negligent actor) | Moderate data impact (typically internal/confidential data pasted, not full PII databases), High likelihood (AI tool use is ubiquitous), but detection is structurally difficult — CASB coverage can address |
-| **PV-001** — Shadow IT Data Storage | Minor-to-moderate data impact, High likelihood, no malicious intent in most cases; risk is data custody, not deliberate exfiltration |
+| **DE-003** — AI Tool Data Leakage (negligent, no regulated data confirmed) | Extremely common; any employee; structurally invisible without CASB; harm is moderate when data type is internal/confidential rather than regulated |
+| After-hours access to a non-sensitive shared drive with no download | Pattern worth monitoring; individual event is low-harm; policy violation only |
 
 ---
 
 ### Low
 
-**Definition:** The scenario results in minor harm that is unlikely to cause lasting organizational damage, involves no regulated data at risk, and typically involves negligent rather than malicious actors. Low scenarios still warrant policy enforcement and documented guidance, but do not typically justify SOC escalation beyond standard alert handling.
+**Definition:** Minor harm with low probability, or a policy violation with no material organizational consequence. Still worth documenting as a potential early indicator, but does not justify SOC escalation on its own.
 
-**Typical characteristics:**
-- Non-sensitive, non-regulated data only
-- No financial exposure or regulatory obligation
-- No service impact
-- Easily reversible or contained
-- Primarily a policy violation rather than a security incident
+**Characteristics:** Non-sensitive data only · No financial exposure · No service impact · Fully reversible · HR action only
 
-**Example indicators of Low severity:**
-- An employee installs unapproved personal software on their work laptop with no data transfer
-- An employee accesses a coworker's public shared drive folder without permission, reads a non-sensitive document, and takes no further action
-- An employee uses a personal USB drive to transfer their own non-sensitive documents when leaving a role
+**Examples:**
+- Employee installs unapproved personal software with no data transfer or network activity
+- Employee accesses a coworker's non-sensitive shared folder without permission and reads one document
+- Single USB transfer of an employee's own non-sensitive personal files at role end
 
-> **Note:** Low severity scenarios are still worth documenting if they represent a measurable behavior pattern that can be an early indicator of escalating risk. A single USB transfer is Low; a pattern of USB transfers correlated with departure notice is an indicator for a higher-severity scenario.
+> A single Low-severity event can be an early indicator of a higher-severity scenario when combined with other signals. Pattern analysis — not individual event severity — determines escalation in these cases.
 
 ---
 
 ## Part 5 — Scoring Worksheet
 
-Use this worksheet when authoring or reviewing a scenario's severity rating. Record your assessments for each dimension, derive the composite scores, and apply the matrix.
+Use this for any scenario where the quick rating in Part 1 is ambiguous or where you need to document your rationale formally.
 
 ```
 SCENARIO ID: __________   SCENARIO NAME: __________________________________
+ARTIFACT TYPE: [ ] Scenario  [ ] Validation Test  [ ] Simulation Test  [ ] Other
 
-IMPACT ASSESSMENT
+─── FOR SCENARIO CARDS ONLY ─────────────────────────────────────────────────
+
+IMPACT (pick the tier that matches; note which indicator applies)
+  [ ] Catastrophic   Indicator: _______________________________________________
+  [ ] Severe         Indicator: _______________________________________________
+  [ ] Moderate       Indicator: _______________________________________________
+  [ ] Minor          Indicator: _______________________________________________
+
+IMPACT SCORE: ______________
+
+LIKELIHOOD (pick the tier that best fits overall)
+  [ ] High    [ ] Medium    [ ] Low
+
+  Key factors driving this rating:
+    Access required: __________________________________________________________
+    Technical skill: __________________________________________________________
+    Attack method / vector detectability: _____________________________________
+    Observed frequency: _______________________________________________________
+
+LIKELIHOOD SCORE: ______________
+
+SEVERITY (matrix lookup): ______________
+
+─── FOR VALIDATION TESTS AND SIMULATION TESTS ───────────────────────────────
+
+  Parent scenario ID: __________   Parent scenario severity: __________
+  Artifact severity (inherited): __________
+
 ─────────────────────────────────────────────────────────────────────────────
-Dimension 1 — Data Impact:          [ ] Catastrophic  [ ] Severe  [ ] Moderate  [ ] Minor
-  Rationale: _________________________________________________________________
-
-Dimension 2 — Financial Impact:     [ ] Catastrophic  [ ] Severe  [ ] Moderate  [ ] Minor
-  Rationale: _________________________________________________________________
-
-Dimension 3 — Operational Impact:   [ ] Catastrophic  [ ] Severe  [ ] Moderate  [ ] Minor
-  Rationale: _________________________________________________________________
-
-Dimension 4 — Legal/Regulatory:     [ ] Catastrophic  [ ] Severe  [ ] Moderate  [ ] Minor
-  Rationale: _________________________________________________________________
-
-Dimension 5 — Reputational Impact:  [ ] Catastrophic  [ ] Severe  [ ] Moderate  [ ] Minor
-  Rationale: _________________________________________________________________
-
-IMPACT SCORE (highest single dimension):  ___________________________________
-
-LIKELIHOOD ASSESSMENT
-─────────────────────────────────────────────────────────────────────────────
-Dimension 1 — Actor Access Req.:       [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
-Dimension 2 — Technical Sophist.:      [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
-Dimension 3 — Evasion Effort (actor):  [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
-Dimension 4 — Observed Frequency:      [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
-Dimension 5 — Attack Vector (method):  [ ] High  [ ] Medium  [ ] Low  [ ] Very Low
-  Vector used: ________________________________________________________________
-  Reference table rating: ______________________________________________________
-
-LIKELIHOOD SCORE (per rule in Part 2):  ____________________________________
-
-SEVERITY RATING (matrix lookup):  __________________________________________
-
-Assigned by: __________________   Date: _______________   Reviewed by: _______________
+Assigned by: ________________   Date: ___________   Reviewed by: ____________
 ```
 
 ---
 
-## Part 6 — Common Calibration Mistakes
+## Part 6 — Reference: Impact Factors
 
-| Mistake | Why It's Wrong | Correct Approach |
-|---------|---------------|-----------------|
-| Rating Critical based on data type alone | "PHI is involved, so it's Critical" ignores volume and likelihood | Rate Catastrophic data impact, then check likelihood — a single accidental email with one patient record may be Medium |
-| Rating Low because no malicious intent | Negligent actors can cause Critical harm | Severity is about potential harm, not intent; PV-001 (shadow IT) is Medium not Low because the data custody risk is real |
-| Rating High for all departing employee scenarios | Not all departures involve access to sensitive data | Apply the dimensions — a departing janitor with standard IT access is lower likelihood than a departing DBA with production credentials |
-| Treating likelihood as "how often does insider threat happen" | Likelihood is scenario-specific, not a general program concern | Rate each dimension for this specific scenario: what access, what skill, what evasion, how often in industry |
-| Upgrading severity based on actor motivation alone | A highly motivated actor with standard access executing a low-impact behavior is still not Critical | Motivation informs the actor profile field, not severity; a disgruntled employee who leaks a non-sensitive internal memo is Medium at most |
-| Downgrading severity because "we have controls" | Severity reflects the harm if the scenario plays out; controls affect likelihood, not harm | If your DLP would stop the exfiltration, that reduces the likelihood dimension — but do not reduce the data impact rating based on the assumption that controls will work |
-| Conflating Evasion Effort (D3) with Attack Vector Detectability (D5) | "The actor used Bluetooth so they were trying to evade detection" conflates a method property with an actor behavior | D3 asks what the actor *chose to do* to hide their actions; D5 asks whether the method *itself* produces a log event — a Bluetooth transfer by a careless actor is still High on D5 even if the actor made no effort to evade |
-| Rating a physical-channel attack as Low severity because it requires physical access | Physical presence at a device is a real enterprise condition, especially for departing employees | A hardwire copy of 50GB of source code on the last day of employment is Critical even though it requires physical access to a laptop; physical access does not reduce impact |
-| Using only network-based detection to validate scenarios that use physical or out-of-band vectors | Proxy logs and CASB cover network channels only | If the scenario uses Bluetooth, USB, or screen capture, validate detection via EDR removable media policy, physical security logs, or behavioral context — not network traffic |
+Use this section when the quick rating in Part 1 is ambiguous — for example, when a scenario touches multiple categories at different tiers and you need to anchor your decision.
+
+**The Impact Score equals the highest applicable tier across these five factors.** You do not need to rate all five — skip factors that do not apply to the scenario.
+
+| Factor | Catastrophic | Severe | Moderate | Minor |
+|--------|-------------|--------|----------|-------|
+| **Data** | >1,000 regulated records (PII/PHI/MNPI); any trade secret or core IP | <1,000 regulated records; significant confidential business data | Internal data only, no regulated types | No sensitive data |
+| **Financial** | >$1M direct loss or regulatory fine; SEC enforcement trigger | $100K–$1M; material remediation or notification costs | $10K–$100K; limited remediation | <$10K; cleanup only |
+| **Operational** | Critical system destroyed; multi-day recovery; business continuity threatened | Major process disrupted; hours of recovery | Single non-critical system; <1 hour recovery | No service impact |
+| **Legal / Regulatory** | Mandatory external notification (HIPAA, GDPR Art. 33/34, SEC 8-K); criminal referral risk | Internal legal investigation; compliance audit triggered | Legal review required; no external obligation | HR action only; no legal involvement |
+| **Reputational** | Public breach disclosure; customer notification letters; press exposure | Executive/board visibility; partner relationship risk | Team/department level only; no customer impact | Fully internal; no reputational risk |
+
+---
+
+## Part 7 — Reference: Likelihood Factors and Attack Vector Table
+
+Use this section when the quick rating in Part 1 is ambiguous or when you need to document how a specific attack method affects detectability.
+
+### Likelihood Factors
+
+Two actor-behavior factors and one method factor combine to produce the likelihood tier.
+
+| Factor | High contribution | Medium contribution | Low contribution |
+|--------|------------------|---------------------|-----------------|
+| **Actor access required** | Standard user access | Departmental or functional role | Elevated/privileged access or multi-party approval |
+| **Technical skill required** | Everyday tools only (browser, email, USB, Bluetooth) | Basic scripting or CLI | Security control knowledge, custom tooling, or exploitation |
+| **Actor evasion effort** | None — behavior blends or is unmonitored | Minimal adjustments (after-hours, personal account) | Deliberate staging, encrypted channels, or active log tampering |
+| **Observed frequency** | Multiple enterprise incidents per year; well-documented | Regularly observed across industry | Occasional or rare; specialist actor profile |
+| **Attack vector detectability** (method property, not actor behavior) | Method produces no log event by design — see table below | Method requires additional tools (CASB, EDR, TLS inspection) to see | Method transits fully monitored, inspectable infrastructure |
+
+> **Key distinction:** Actor evasion effort is what the actor *chooses to do*. Attack vector detectability is a property of the *method itself* — a Bluetooth transfer leaves no network log whether the actor intended evasion or not.
+
+### Attack Vector Reference Table
+
+| Method | Access | Skill | Detectability | Notes |
+|--------|--------|-------|---------------|-------|
+| **Bluetooth file transfer** | Standard | None | **None — no log event** | Completely off-network; no corporate log without specific MDM/EDR Bluetooth policy |
+| **USB / removable media** | Standard | None | **None without EDR policy** | Bypasses all network monitoring; EDR removable media policy captures it if deployed |
+| **Hardwire / Thunderbolt to external drive** | Standard | Low | **None — no log event** | High throughput (GB/min); no network footprint; requires physical device access |
+| **NFC transfer** | Standard | None | **None — no log event** | Very short range; rare; zero network footprint |
+| **Screen photograph (personal camera/phone)** | Standard | None | **None — no log event** | No corporate digital footprint; captures anything rendered on screen |
+| **Verbal or cognitive disclosure** (memorizing, dictating) | Standard | Low | **None — no log event** | No technical artifact; detectable only through behavioral observation |
+| **Printing sensitive documents** | Standard | None | **None without print audit logging** | Print server audit logging often disabled or not SIEM-forwarded |
+| **Personal webmail** (Gmail, ProtonMail) via corporate network | Standard | None | **Content invisible without TLS inspection** | Domain and volume visible to proxy; file content not inspectable without CASB |
+| **Consumer AI tool** (ChatGPT, Gemini, Copilot) | Standard | None | **Content invisible without CASB** | HTTPS visible to proxy; session content not inspectable without CASB; invisible to endpoint DLP |
+| **Unsanctioned cloud storage** (Dropbox, personal Drive) | Standard | None | **Content invisible without CASB** | Domain visible; file names and content not inspectable without TLS inspection or CASB |
+| **Personal VPN / encrypted tunnel** | Standard | Low | **Metadata visible; content encrypted** | Traffic volume and destination IP visible to firewall; content not inspectable |
+| **DNS exfiltration** | Elevated | High | **Metadata visible; payload encoded** | DNS volume anomaly detectable; content extraction requires specialist tooling |
+| **HTTPS covert channel / steganography** | Elevated | High | **Metadata visible; payload hidden** | Legitimate-looking traffic; content decoding requires specialized detection |
+| **Corporate email via gateway** | Standard | None | **Fully inspectable** | Email gateway, DLP, and archiving capture content by default |
+| **Corporate file share / SharePoint** | Standard | None | **Fully inspectable** | Native audit logging captures copy, move, and download events |
+| **SaaS API export** (Salesforce, Workday, ERP) | Functional | Low | **Fully inspectable** | API activity logged natively; export volume anomaly detectable |
+| **SFTP / FTP to external server** | Standard | Low | **Destination and volume visible** | Unusual protocol for corporate environments; firewall logs destination; content not inspectable |
+
+> If a scenario uses multiple vectors, apply the detectability rating of the **least visible method** — the actor will complete the exfiltration via the path that cannot be seen.
+
+---
+
+## Part 8 — Common Calibration Mistakes
+
+| Mistake | Correct approach |
+|---------|-----------------|
+| Applying all five impact factors to every scenario | Skip factors that don't apply. A pure access-control violation has no data or financial dimension — rate only the factors that describe real harm. |
+| Rating a validation or simulation test's impact as if real data were at risk | Tests inherit severity from the parent scenario. The test itself has no data impact — the gap it reveals does. |
+| Rating Critical based on data type alone | Data type alone is not sufficient. A single accidental email with one PHI record is not Critical — check volume and likelihood too. |
+| Downgrading severity because controls exist | Controls affect likelihood, not impact. Do not reduce the impact tier because your DLP would probably stop the exfiltration. |
+| Treating a physical-vector scenario as Low likelihood because it requires physical access | Physical access to a device is a routine condition for most employees, especially at departure. Bluetooth and USB transfers require no elevated privilege. |
+| Confusing actor evasion effort with attack vector detectability | These are independent. A Bluetooth transfer by a careless actor still produces no log event — the method's detectability is fixed regardless of intent. |
+| Upgrading severity for motivated actors | Motivation belongs in the Actor Profile field. A disgruntled employee leaking a non-sensitive memo is still Medium at most. |
+| Rating all departing employee scenarios as Critical | Severity depends on what data the departing employee can reach, not the departure itself. |
 
 ---
 
@@ -381,5 +286,6 @@ Assigned by: __________________   Date: _______________   Reviewed by: _________
 
 | Version | Date | Description |
 |---------|------|-------------|
-| 1.1 | 2026-03-31 | Added Dimension 5 (Attack Vector Detectability) to likelihood assessment; added Attack Vector Reference Table with 17 methods; updated scoring worksheet and calibration mistakes; updated deriving rule to 5 dimensions |
-| 1.0 | 2026-03-30 | Initial release — impact/likelihood dimensions, severity matrix, per-tier examples, scoring worksheet, calibration guide |
+| 2.0 | 2026-04-01 | Restructured for simplicity: quick 2-question rating in Part 1 is the primary path; detailed sub-dimensions moved to reference sections (Parts 6–7); added Part 3 covering severity inheritance for validation tests and simulation tests; simplified scoring worksheet; consolidated calibration guide |
+| 1.1 | 2026-03-31 | Added Dimension 5 (Attack Vector Detectability); added Attack Vector Reference Table; updated scoring worksheet |
+| 1.0 | 2026-03-30 | Initial release |
