@@ -25,23 +25,20 @@
 | **Likelihood Score** | High / Medium / Low |
 | **Minimum Maturity Level** | [1–5 — minimum program maturity required to detect this scenario] |
 
-> **Severity Guide:** Severity = Impact × Likelihood. Use [docs/severity-classification.md](../docs/severity-classification.md) for the full scoring worksheet and dimension criteria.
+> **Severity = Impact × Likelihood.** Full reference: [docs/severity-classification.md](../docs/severity-classification.md)
 >
-> **Impact Score** — rate the *highest* of these five dimensions:
-> - **Data Impact:** volume and sensitivity of data at risk (Catastrophic = >10K regulated records or full IP/trade secret)
-> - **Financial Impact:** direct loss or fine exposure (Catastrophic = >$1M or SEC enforcement trigger)
-> - **Operational Impact:** disruption to systems or services (Catastrophic = critical system destroyed, multi-day recovery)
-> - **Legal/Regulatory Impact:** compliance obligations triggered (Catastrophic = mandatory external notification, criminal referral)
-> - **Reputational Impact:** external disclosure risk (Catastrophic = breach notification letters, press exposure)
+> **Impact Score** — pick the highest tier where any one indicator applies. Skip factors that don't apply to this scenario.
+> - **Catastrophic:** >1,000 regulated records (PII/PHI/MNPI) exposed, OR any trade secret/core IP, OR >$1M harm, OR critical system destroyed, OR mandatory external notification triggered
+> - **Severe:** <1,000 regulated records or significant confidential data, OR $100K–$1M harm, OR major process disrupted for hours, OR internal legal investigation required
+> - **Moderate:** Internal non-regulated data only, OR <$100K harm, OR single system disrupted with quick recovery, OR policy violation with real consequence
+> - **Minor:** No sensitive data, no financial exposure, no service impact, fully reversible
 >
-> **Likelihood Score** — average judgment across five dimensions:
-> - **Actor Access (D1):** High = standard user access; Medium = departmental privilege; Low = elevated/admin; Very Low = restricted/multi-party approval
-> - **Technical Sophistication (D2):** High = browser/email/USB/Bluetooth only; Medium = basic scripting; Low = security control knowledge required; Very Low = advanced evasion or exploitation
-> - **Evasion Effort (D3):** What the *actor actively chooses to do* to hide behavior. High = none required; Medium = minimal (after-hours, personal account); Low = deliberate staging; Very Low = active counter-detection
-> - **Observed Frequency (D4):** High = multiple enterprise incidents/year, well-documented; Medium = regularly observed; Low = occasional; Very Low = rare
-> - **Attack Vector Detectability (D5):** Inherent visibility of the *method itself* to enterprise monitoring, independent of actor behavior. High = method produces no log event by design (Bluetooth, USB, hardwire, screen photo, verbal); Medium = requires additional tools (CASB, EDR removable media policy, TLS inspection); Low = metadata visible, content obscured (VPN, covert channel); Very Low = fully inspectable by default (corporate email gateway, file share audit logs). See Attack Vector Reference Table in [docs/severity-classification.md](../docs/severity-classification.md).
+> **Likelihood Score** — pick the single tier that best fits overall. Note the attack method — physical/out-of-band methods (Bluetooth, USB, hardwire, screen photo, verbal) produce no log event by design and raise likelihood regardless of actor evasion effort. See the Attack Vector Reference Table in [docs/severity-classification.md](../docs/severity-classification.md).
+> - **High:** Standard access, everyday tools, method blends or is invisible to monitoring, frequently observed
+> - **Medium:** Departmental access or basic skill required, partially monitored, occasionally observed
+> - **Low:** Privileged access or significant skill required, well-monitored path, rarely observed
 >
-> **Severity Matrix:**
+> **Matrix:**
 > ```
 > Impact ↓ / Likelihood →  | High     | Medium   | Low
 > ─────────────────────────────────────────────────────
