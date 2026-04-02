@@ -42,6 +42,7 @@ SIDTVF is an insider threat detection and validation framework designed for use 
 | `mapping/compliance.md` | Compliance framework mapping | When scenarios or compliance controls change |
 | `metrics/kpis.md` | KPI definitions | When metrics or measurement methods change |
 | `docs/getting-started.md` | Day 1 onboarding guide | When the recommended starting path changes |
+| `docs/guides/*.md` | Component how-to guides (one per artifact type) | When a component's usage workflow changes or a new artifact type is added |
 | `docs/severity-classification.md` | Severity rating reference (impact/likelihood dimensions, matrix, examples) | When severity criteria or examples change |
 | `docs/coverage-matrix.md` | Artifact coverage per scenario | When any artifact is added or scenario is added |
 | `docs/policies/*.md` | Policy templates | When legal requirements or monitoring scope changes |
